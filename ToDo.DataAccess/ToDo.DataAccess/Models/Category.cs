@@ -6,6 +6,6 @@ namespace ToDo.DataAccess.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public Category Parent{ get; set; }
+        public Category Parent { get; set; }
     }
 }
