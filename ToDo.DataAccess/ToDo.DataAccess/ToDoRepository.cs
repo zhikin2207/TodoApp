@@ -7,48 +7,48 @@ using ToDo.DataAccess.Models;
 
 namespace ToDo.DataAccess
 {
-    public class ToDoRepository : IDataRepository
+    public class GenericRepository<T> : IDataRepository<T> where T : class
     {
         private readonly ToDoDbContext _context;
 
-        ToDoRepository(ToDoDbContext newContext)
+        public GenericRepository(ToDoDbContext context)
         {
-            _context = newContext;
+            _context = context;
         }
 
-        public void Add<TEntity>(TEntity entity) where TEntity : class
+        public void Add(T entity)
         {
-            _context.Set<TEntity>().Add(entity);
+            _context.Set<T>().Add(entity);
 
             _context.SaveChanges();
         }
 
-        public bool Delete<TEntity>(TEntity entity) where TEntity : class
+        public bool Delete(T entity)
         {
-            if (!_context.Set<TEntity>().Contains(entity)) return false;
+            if (!_context.Set<T>().Contains(entity)) return false;
 
-            _context.Set<TEntity>().Remove(entity);
+            _context.Set<T>().Remove(entity);
             _context.SaveChanges();
 
             return true;
         }
 
-        public void Edit<TEntity>(TEntity entity) where TEntity : class
+        public void Edit(T entity)
         {
-            _context.Set<TEntity>(); // TODO
+            _context.Set<T>(); // TODO
         }
 
-        public IEnumerable<TEntity> GetAll<TEntity>() where TEntity : class
+        public IEnumerable<T> GetAll()
         {
-            return _context.Set<TEntity>(); 
+            return _context.Set<T>(); 
         }
     }
 
-    public interface IDataRepository
-    {       
-        void Add<TEntity>(TEntity entity) where TEntity : class;
-        IEnumerable<TEntity> GetAll<TEntity>() where TEntity : class;
-        bool Delete<TEntity>(TEntity entity) where TEntity : class;
-        void Edit<TEntity>(TEntity entity) where TEntity : class;
+    public interface IDataRepository<T>
+    {
+        void Add(T entity);
+        IEnumerable<T> GetAll();
+        bool Delete(T entity);
+        void Edit(T entity);
     }
 }

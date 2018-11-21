@@ -3,15 +3,6 @@ using System.Collections.Generic;
 
 namespace ToDo.DataAccess.Models
 {
-    public enum Priority
-    {
-        SuperHigh,
-        High,
-        Medium,
-        Low,
-        SuperLow        
-    }
-
     public class Item
     {
         public Guid Id { get; set; }
