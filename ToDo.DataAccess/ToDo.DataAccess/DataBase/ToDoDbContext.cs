@@ -12,7 +12,7 @@ namespace ToDo.DataAccess.DataBase
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TagItem>().HasKey(t => new { t.ItemId, t.TagId});
+            modelBuilder.Entity<TagItem>().HasKey(t => new { t.ItemId, t.TagId });
         }
 
         public DbSet<Item> Items { get; set; }

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ToDo.DataAccess.DataBase;
-using ToDo.DataAccess.Models;
 
 namespace ToDo.DataAccess
 {
@@ -35,20 +33,12 @@ namespace ToDo.DataAccess
 
         public void Edit(T entity)
         {
-            _context.Set<T>(); // TODO
+            throw new NotImplementedException();
         }
 
         public IEnumerable<T> GetAll()
         {
             return _context.Set<T>(); 
         }
-    }
-
-    public interface IDataRepository<T>
-    {
-        void Add(T entity);
-        IEnumerable<T> GetAll();
-        bool Delete(T entity);
-        void Edit(T entity);
     }
 }
