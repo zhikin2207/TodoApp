@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using ToDo.DataAccess.Models;
 
 namespace ToDo.DataAccess.DataBase
@@ -25,10 +24,10 @@ namespace ToDo.DataAccess.DataBase
             var tag1 = new Tag { Name = "Tag1", Color = "Yellow" };
             var tag2 = new Tag { Name = "Tag2", Color = "Red" };
 
-            var item1 = new Item { Title = "Item1", Description = "Text", Priority = ItemPriority.High, Caregory = cat1, DueDate = DateTime.Now, Status = true };
-            var item2 = new Item { Title = "Item2", Description = "Text", Priority = ItemPriority.Low, Caregory = cat2, DueDate = DateTime.Now, Status = true };
-            var item3 = new Item { Title = "Item3", Description = "Text", Priority = ItemPriority.Medium, Caregory = cat3, DueDate = DateTime.Now, Status = false };
-            var item4 = new Item { Title = "Item4", Description = "Text", Priority = ItemPriority.SuperLow, Caregory = cat3, DueDate = DateTime.Now, Status = false };
+            var item1 = new Item { Title = "Item1", Description = "Text", Priority = Priority.High, Caregory = cat1, DueDate = DateTime.Now, Status = true };
+            var item2 = new Item { Title = "Item2", Description = "Text", Priority = Priority.Low, Caregory = cat2, DueDate = DateTime.Now, Status = true };
+            var item3 = new Item { Title = "Item3", Description = "Text", Priority = Priority.Medium, Caregory = cat3, DueDate = DateTime.Now, Status = false };
+            var item4 = new Item { Title = "Item4", Description = "Text", Priority = Priority.SuperLow, Caregory = cat3, DueDate = DateTime.Now, Status = false };
 
             var con1 = new TagItem { Item = item1, Tag = tag1 };
             var con2 = new TagItem { Item = item1, Tag = tag2 };

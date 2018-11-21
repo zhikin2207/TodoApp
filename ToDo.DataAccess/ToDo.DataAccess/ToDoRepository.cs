@@ -7,7 +7,7 @@ using ToDo.DataAccess.Models;
 
 namespace ToDo.DataAccess
 {
-    public class ToDoRepository : IToDoRepository
+    public class ToDoRepository : IDataRepository
     {
         private readonly ToDoDbContext _context;
 
@@ -16,40 +16,39 @@ namespace ToDo.DataAccess
             _context = newContext;
         }
 
-        public IEnumerable<Category> GetCategories()
-        {
-            return _context.Categories;
-        }
-
-        public IEnumerable<Item> GetItems()
-        {
-            return _context.Items;
-        }
-
-        public IEnumerable<TagItem> GetTags_Items()
-        {
-            return _context.TagsItems;
-        }
-
-        public IEnumerable<Tag> Tags()
-        {
-            return _context.Tags;
-        }
-
         public void Add<TEntity>(TEntity entity) where TEntity : class
         {
             _context.Set<TEntity>().Add(entity);
 
             _context.SaveChanges();
         }
+
+        public bool Delete<TEntity>(TEntity entity) where TEntity : class
+        {
+            if (!_context.Set<TEntity>().Contains(entity)) return false;
+
+            _context.Set<TEntity>().Remove(entity);
+            _context.SaveChanges();
+
+            return true;
+        }
+
+        public void Edit<TEntity>(TEntity entity) where TEntity : class
+        {
+            _context.Set<TEntity>(); // TODO
+        }
+
+        public IEnumerable<TEntity> GetAll<TEntity>() where TEntity : class
+        {
+            return _context.Set<TEntity>(); 
+        }
     }
 
-    public interface IToDoRepository
-    {
-        IEnumerable<Item> GetItems();
-        IEnumerable<Category> GetCategories();
-        IEnumerable<Tag> Tags();
-        IEnumerable<TagItem> GetTagsItems();
+    public interface IDataRepository
+    {       
         void Add<TEntity>(TEntity entity) where TEntity : class;
+        IEnumerable<TEntity> GetAll<TEntity>() where TEntity : class;
+        bool Delete<TEntity>(TEntity entity) where TEntity : class;
+        void Edit<TEntity>(TEntity entity) where TEntity : class;
     }
 }
