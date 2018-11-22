@@ -35,7 +35,7 @@ namespace ToDo.DataAccess
         {
             throw new NotImplementedException();
         }
-        
+
         public IEnumerable<T> GetAll()
         {
             return _context.Set<T>();

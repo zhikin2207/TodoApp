@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using ToDo.DataAccess.DataBase;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess;
@@ -71,3 +68,4 @@ namespace ToDo.ConsoleView
         }
     }
 }
+
