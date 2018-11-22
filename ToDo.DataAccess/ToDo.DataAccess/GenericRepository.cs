@@ -5,7 +5,7 @@ using ToDo.DataAccess.DataBase;
 
 namespace ToDo.DataAccess
 {
-    public class GenericRepository<T> : IDataRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly ToDoDbContext _context;
 
@@ -38,7 +38,7 @@ namespace ToDo.DataAccess
 
         public IEnumerable<T> GetAll()
         {
-            return _context.Set<T>(); 
+            return _context.Set<T>();
         }
     }
 }
