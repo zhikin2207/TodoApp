@@ -8,6 +8,5 @@ namespace ToDo.DataAccess
         IEnumerable<T> GetAll();
         bool Delete(T entity);
         void Edit(T entity);
-
     }
 }

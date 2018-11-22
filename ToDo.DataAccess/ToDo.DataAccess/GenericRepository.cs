@@ -10,7 +10,7 @@ namespace ToDo.DataAccess
         private readonly ToDoDbContext _context;
 
         public GenericRepository(ToDoDbContext context)
-        { 
+        {
             _context = context;
         }
 
@@ -35,9 +35,7 @@ namespace ToDo.DataAccess
         {
             throw new NotImplementedException();
         }
-
-
-
+        
         public IEnumerable<T> GetAll()
         {
             return _context.Set<T>();

@@ -68,6 +68,6 @@ namespace ToDo.ConsoleView
 
             tagItem = new TagItem { Item = item, Tag = tag };
             item.Caregory = category;
-        }       
+        }
     }
 }
