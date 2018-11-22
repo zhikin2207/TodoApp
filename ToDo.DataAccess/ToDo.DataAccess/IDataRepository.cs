@@ -2,11 +2,12 @@
 
 namespace ToDo.DataAccess
 {
-    public interface IDataRepository
+    public interface IDataRepository<T>
     {
-        void Add<T>(T entity) where T : class;
-        IEnumerable<T> GetAll<T>() where T : class;
-        bool Delete<T>(T entity) where T : class;
-        void Edit<T>(T entity) where T : class;
+        void Add(T entity);
+        IEnumerable<T> GetAll();
+        bool Delete(T entity);
+        void Edit(T entity);
+
     }
 }

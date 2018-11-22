@@ -5,24 +5,23 @@ using ToDo.DataAccess.DataBase;
 
 namespace ToDo.DataAccess
 {
-    public class GenericRepository : IDataRepository
+    public class GenericRepository<T> : IDataRepository<T> where T : class
     {
         private readonly ToDoDbContext _context;
 
         public GenericRepository(ToDoDbContext context)
-        {
+        { 
             _context = context;
-            ToDoDbInitializer.Initialize(_context);
         }
 
-        public void Add<T>(T entity) where T : class
+        public void Add(T entity)
         {
             _context.Set<T>().Add(entity);
 
             _context.SaveChanges();
         }
 
-        public bool Delete<T>(T entity) where T : class
+        public bool Delete(T entity)
         {
             if (!_context.Set<T>().Contains(entity)) return false;
 
@@ -32,14 +31,16 @@ namespace ToDo.DataAccess
             return true;
         }
 
-        public void Edit<T>(T entity) where T : class
+        public void Edit(T entity)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> GetAll<T>() where T : class
+
+
+        public IEnumerable<T> GetAll()
         {
-            return _context.Set<T>(); 
+            return _context.Set<T>();
         }
     }
 }

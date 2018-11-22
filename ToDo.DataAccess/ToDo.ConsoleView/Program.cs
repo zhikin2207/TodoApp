@@ -13,40 +13,25 @@ namespace ToDo.ConsoleView
     {
         static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var context = new ToDoDbContext(new DbContextOptionsBuilder<ToDoDbContext>()
+                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ToDoDB;Trusted_Connection=True;").Options);
 
-            //Item item = new Item();
-            //Category category = new Category();
-            //Tag tag = new Tag();
-            //TagItem tagItem = new TagItem();
+            ToDoDbInitializer.Initialize(context);
 
-            //FillObjects(item, category, tag, tagItem);
-
-
-            var optionsBuilder = new DbContextOptionsBuilder<ToDoDbContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ToDoDB;Trusted_Connection=True;");
-
-            GenericRepository repo = new GenericRepository(new ToDoDbContext(optionsBuilder.Options));
-
-            //repo.Add<Item>(item);
-            //repo.Add<Category>(category);
-            //repo.Add<Tag>(tag);
-            //repo.Add<TagItem>(tagItem);
+            GenericRepository<Item> repoItem = new GenericRepository<Item>(context);
+            GenericRepository<Category> repoCategory = new GenericRepository<Category>(context);
+            GenericRepository<Tag> repoTag = new GenericRepository<Tag>(context);
 
             var cat = new Category { Name = "CatPro", Parent = null };
-
             var tag = new Tag { Name = "Tag5", Color = "Blue" };
-
             var item = new Item { Title = "ItemPro", Description = "Text", Priority = Priority.High, Caregory = cat, DueDate = DateTime.Now, Status = true };
 
-            var con = new TagItem { Item = item, Tag = tag };
+            repoItem.Add(item);
+            repoCategory.Delete(cat);
+            repoCategory.Add(cat);
+            repoTag.Add(tag);
 
-            repo.Add<Item>(item);
-            //repo.Add<Category>(cat);
-            repo.Add<Tag>(tag);
-            repo.Add<TagItem>(con);
-
-            foreach (var i in repo.GetAll<Item>())
+            foreach (var i in repoItem.GetAll())
             {
                 Console.WriteLine(i.Title);
             }
@@ -83,10 +68,6 @@ namespace ToDo.ConsoleView
 
             tagItem = new TagItem { Item = item, Tag = tag };
             item.Caregory = category;
-        }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-           WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        }       
     }
 }
