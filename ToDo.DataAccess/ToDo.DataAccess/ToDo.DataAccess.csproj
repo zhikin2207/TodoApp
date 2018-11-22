@@ -115,7 +115,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDataRepository.cs" />
+    <Compile Include="IGenericRepository.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Priority.cs" />
