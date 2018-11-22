@@ -68,4 +68,3 @@ namespace ToDo.ConsoleView
         }
     }
 }
-
