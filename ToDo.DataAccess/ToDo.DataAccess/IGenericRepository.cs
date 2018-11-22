@@ -2,7 +2,7 @@
 
 namespace ToDo.DataAccess
 {
-    public interface IDataRepository<T>
+    public interface IGenericRepository<T>
     {
         void Add(T entity);
         IEnumerable<T> GetAll();
