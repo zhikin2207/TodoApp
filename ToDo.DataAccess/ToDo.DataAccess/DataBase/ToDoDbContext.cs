@@ -7,7 +7,6 @@ namespace ToDo.DataAccess.DataBase
     {
         public ToDoDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
