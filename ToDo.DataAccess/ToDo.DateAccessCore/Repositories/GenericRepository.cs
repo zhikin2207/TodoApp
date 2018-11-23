@@ -7,7 +7,7 @@ using ToDo.DataAccess.Repositories.Interfaces;
 
 namespace ToDo.DataAccess
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class,  ICategoryRepository
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly ToDoDbContext _context;
 

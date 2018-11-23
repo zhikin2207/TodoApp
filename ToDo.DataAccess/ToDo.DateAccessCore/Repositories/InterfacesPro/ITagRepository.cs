@@ -7,8 +7,7 @@ using ToDo.DataAccess.Models;
 
 namespace ToDo.DataAccess.Repositories.Interfaces
 {
-    public interface IItemRepository : IGenericRepository<Item>
+    public interface ITagRepository : IGenericRepository<Tag>
     {
-        //new Item GetById(Guid id);
     }
 }

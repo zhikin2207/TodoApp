@@ -5,7 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using ToDo.DataAccess;
 using ToDo.DataAccess.DataBase;
+using ToDo.DataAccess.Models;
+using ToDo.DataAccess.Repositories.Interfaces;
 
 namespace ToDo.WebAPI
 {
@@ -28,6 +31,9 @@ namespace ToDo.WebAPI
                     builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
                 }));
 
+            services.AddScoped<IGenericRepository<Category>, GenericRepository<Category>>();
+            services.AddScoped<IGenericRepository<Tag>, GenericRepository<Tag>>();
+            services.AddScoped<IGenericRepository<Item>, GenericRepository<Item>>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

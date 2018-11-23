@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ToDo.DataAccess;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories.Interfaces;
 
@@ -13,35 +14,35 @@ namespace ToDo.WebAPI.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository repoCategory;
+        private readonly IGenericRepository<Category> categoryRepository;
 
-        public CategoryController(ICategoryRepository CategoryRepository)
+        public CategoryController(IGenericRepository<Category> newCategoryRepository)
         {
-            repoCategory = CategoryRepository;
+            categoryRepository = newCategoryRepository;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Category>> GetAll()
         {
-            return repoCategory.GetAll().ToList();
+            return categoryRepository.GetAll().ToList();
         }
 
         [HttpGet("{id}")]
         public ActionResult<Category> FindByKey(Guid id)
         {
-            return repoCategory.GetById(id);
+           return categoryRepository.GetAll().Where( i => i.Id == id).FirstOrDefault();
         }
 
         [HttpPost]
         public void Create([FromBody] Category value)
         {
-            repoCategory.Add(value);
+            categoryRepository.Add(value);
         }
 
         [HttpDelete("{id}")]
         public void Delete(Guid id)
         {
-            repoCategory.Delete(repoCategory.GetById(id));
+            categoryRepository.Delete(categoryRepository.GetAll().Where( i => i.Id == id).FirstOrDefault());
         }
     }
 }

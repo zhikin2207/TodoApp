@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ToDo.DataAccess;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories.Interfaces;
 
@@ -13,35 +14,35 @@ namespace ToDo.WebAPI.Controllers
     [ApiController]
     public class TagController : ControllerBase
     {
-        private readonly ITagRepository repoTag;
+        private readonly IGenericRepository<Tag> tagRepository;
 
-        public TagController(ITagRepository TagRepository)
+        public TagController(IGenericRepository<Tag> newTagRepository)
         {
-            repoTag = TagRepository;
+            tagRepository = newTagRepository;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Tag>> GetAll()
         {
-            return repoTag.GetAll().ToList();
+            return tagRepository.GetAll().ToList();
         }
 
         [HttpGet("{id}")]
         public ActionResult<Tag> FindByKey(Guid id)
         {
-            return repoTag.GetById(id);
+            return tagRepository.GetAll().Where( i => i.Id == id).FirstOrDefault();
         }
 
         [HttpPost]
         public void Create([FromBody] Tag value)
         {
-            repoTag.Add(value);
+            tagRepository.Add(value);
         }
 
         [HttpDelete("{id}")]
         public void Delete(Guid id)
         {
-            repoTag.Delete(repoTag.GetById(id));
+            tagRepository.Delete(tagRepository.GetAll().Where( i => i.Id == id).FirstOrDefault());
         }
     }
 }
