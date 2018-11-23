@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ToDo.DataAccess
 {
@@ -6,6 +7,7 @@ namespace ToDo.DataAccess
     {
         void Add(T entity);
         IEnumerable<T> GetAll();
+        T GetById(Guid id);
         bool Delete(T entity);
         void Edit(T entity);
     }

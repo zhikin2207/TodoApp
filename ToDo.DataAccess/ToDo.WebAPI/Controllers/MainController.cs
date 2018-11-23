@@ -27,10 +27,28 @@ namespace ToDo.WebAPI.Controllers
             repoTag = new GenericRepository<Tag>(_context);
         }
 
-    [HttpGet]
+        [HttpGet]
         public ActionResult<IEnumerable<Item>> GetAll()
         {
             return _context.Items.ToList();
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<Item> Get(Guid id)
+        {
+            return repoItem.GetById(id);
+        }
+
+        [HttpPost]
+        public void Post([FromBody] Item value)
+        {
+            repoItem.Add(value);
+        }
+
+        // DELETE api/values/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
         }
     }
 }
