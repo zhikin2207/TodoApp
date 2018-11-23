@@ -111,6 +111,7 @@
   <ItemGroup>
     <Compile Include="Repositories\Classes\CategoryRepository.cs" />
     <Compile Include="Repositories\Classes\TagRepository.cs" />
+    <Compile Include="Repositories\GenericRepository.cs" />
     <Compile Include="Repositories\IGenericRepository.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Item.cs" />
