@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using ToDo.DataAccess;
 using ToDo.DataAccess.DataBase;
 using ToDo.DataAccess.Models;
+using ToDo.DataAccess.Repositories.Classes;
+using ToDo.DataAccess.Repositories.Interfaces;
 
 namespace ToDo.WebAPI.Controllers
 {
@@ -15,40 +17,39 @@ namespace ToDo.WebAPI.Controllers
     public class MainController : ControllerBase
     {
         private readonly ToDoDbContext _context;
-        private readonly GenericRepository<Item> repoItem;
-        private readonly GenericRepository<Category> repoCat;
-        private readonly GenericRepository<Tag> repoTag;
+        private readonly IItemRepository repoItem;
+        private readonly ICategoryRepository repoCat;
+        private readonly ITagRepository repoTag;
 
-        public MainController(ToDoDbContext context)
+        public MainController(IItemRepository itemRepository, ICategoryRepository catRepository, ITagRepository tagRepository)
         {
-            _context = context;
-            repoItem = new GenericRepository<Item>(_context);
-            repoCat = new GenericRepository<Category>(_context);
-            repoTag = new GenericRepository<Tag>(_context);
+            repoItem = itemRepository;
+            repoCat = catRepository;
+            repoTag = tagRepository;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Item>> GetAll()
         {
-            return _context.Items.ToList();
+            return repoItem.GetAll().ToList();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Item> Get(Guid id)
+        public ActionResult<Item> FindByKey(Guid id)
         {
             return repoItem.GetById(id);
         }
 
         [HttpPost]
-        public void Post([FromBody] Item value)
+        public void Create([FromBody] Item value)
         {
             repoItem.Add(value);
         }
 
-        // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
+            repoItem.Delete(repoItem.GetById(id));
         }
     }
 }
