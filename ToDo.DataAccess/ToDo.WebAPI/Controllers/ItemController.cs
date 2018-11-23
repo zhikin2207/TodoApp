@@ -14,18 +14,13 @@ namespace ToDo.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MainController : ControllerBase
+    public class ItemController : ControllerBase
     {
-        private readonly ToDoDbContext _context;
-        private readonly IItemRepository repoItem;
-        private readonly ICategoryRepository repoCat;
-        private readonly ITagRepository repoTag;
+        private readonly IItemRepository repoItem
 
-        public MainController(IItemRepository itemRepository, ICategoryRepository catRepository, ITagRepository tagRepository)
+        public ItemController(IItemRepository itemRepository)
         {
             repoItem = itemRepository;
-            repoCat = catRepository;
-            repoTag = tagRepository;
         }
 
         [HttpGet]
