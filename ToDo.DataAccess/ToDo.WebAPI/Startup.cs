@@ -13,6 +13,7 @@ namespace ToDo.WebAPI
     {
         public Startup(IConfiguration configuration)
         {
+            Console.WriteLine("Text");
             Configuration = configuration;
         }
 
