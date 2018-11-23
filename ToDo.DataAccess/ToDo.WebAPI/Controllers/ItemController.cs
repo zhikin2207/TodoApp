@@ -16,7 +16,7 @@ namespace ToDo.WebAPI.Controllers
     [ApiController]
     public class ItemController : ControllerBase
     {
-        private readonly IItemRepository repoItem
+        private readonly IItemRepository repoItem;
 
         public ItemController(IItemRepository itemRepository)
         {
