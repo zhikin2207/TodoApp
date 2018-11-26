@@ -8,7 +8,6 @@ using System;
 using ToDo.DataAccess;
 using ToDo.DataAccess.DataBase;
 using ToDo.DataAccess.Models;
-using ToDo.DataAccess.Repositories.Interfaces;
 
 namespace ToDo.WebAPI
 {

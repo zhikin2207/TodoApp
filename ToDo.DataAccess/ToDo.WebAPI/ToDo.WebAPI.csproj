@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ToDo.DateAccessCore\ToDo.DateAccess.csproj" />
+    <ProjectReference Include="..\ToDo.DataAccess\ToDo.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
