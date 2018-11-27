@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ToDo.DataAccess.Models
 {
@@ -12,7 +13,8 @@ namespace ToDo.DataAccess.Models
         public bool Status { get; set; }
         public Priority Priority { get; set; }
 
-        public Category Caregory { get; set; }
+        [ForeignKey("CategoryId")]
+        public Category Category { get; set; }
         public IEnumerable<TagItem> TagItem { get; set; }
     }
 }
