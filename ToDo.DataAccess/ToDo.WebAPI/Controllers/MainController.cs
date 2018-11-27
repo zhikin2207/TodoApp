@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using ToDo.DataAccess;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories;
+using ToDo.Services.Handlers;
+using ToDo.Services.ViewModels;
 using ToDo.WebAPI.ViewModels;
 
 namespace ToDo.WebAPI.Controllers
@@ -15,69 +17,37 @@ namespace ToDo.WebAPI.Controllers
     [ApiController]
     public class MainController : ControllerBase
     {
-        private readonly IItemRepository _itemRepository;
+        private readonly IItemHandler _itemHandler;
 
-        public MainController(IItemRepository itemRepository)
+        public MainController(IItemHandler itemHandler)
         {
-            _itemRepository = itemRepository;
+            _itemHandler = itemHandler;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ItemViewModel>> GetAll()
+        public ActionResult<IEnumerable<ItemDisplayViewModel>> GetAll()
         {
-            return _itemRepository
-                .GetAll()
-                .Select(ConvertToItemViewModel)
-                .ToList();
+            return _itemHandler.GetAll();
         }
 
-        [HttpGet("{categoryString}/tags/{tagString}")]
-        public IEnumerable<ItemViewModel> Search(string category, string tagString)
+        [HttpGet("{category}/tags/{tagString}")]
+        public IEnumerable<ItemDisplayViewModel> Search(string category, string tagString)
         {
             string[] tags = tagString.Split('-');
 
-            var items = _itemRepository
-                .GetAll()
-                .Where(i => string.Equals(
-                    i.Category.Name,
-                    category,
-                    StringComparison.CurrentCultureIgnoreCase))
-                .Where(i => i.TagItem
-                    .Select(ti => ti.Tag.Name)
-                    .Intersect(tags)
-                    .Any())
-                .Select(ConvertToItemViewModel)
-                .ToList();
-
-            return items;
+            return _itemHandler.Search(category, tags);
         }
 
         [HttpPost]
-        public void Create([FromBody] Item value)
+        public void Create([FromBody] ItemCreateViewModel value)
         {
-            _itemRepository.Add(value);
+            _itemHandler.Create(value);
         }
 
         [HttpDelete("{id}")]
         public void Delete(Guid id)
         {
-            var itemToDelete = _itemRepository.GetAll().Where(i => i.Id == id).FirstOrDefault();
-            _itemRepository.Delete(itemToDelete);
-        }
-
-        public ItemViewModel ConvertToItemViewModel(Item item)
-        {
-            return new ItemViewModel
-            {
-                Title = item.Title,
-                Category = item.Category.Name,
-                Id = item.Id,
-                Description = item.Description,
-                DueDate = item.DueDate,
-                Priority = item.Priority,
-                Status = item.Status,
-                TagNames = item.TagItem.Select(t => t.Tag.Name)
-            };
+            _itemHandler.Delete(id);
         }
     }
 }

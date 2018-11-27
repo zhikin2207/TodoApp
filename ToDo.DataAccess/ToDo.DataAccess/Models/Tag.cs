@@ -9,6 +9,6 @@ namespace ToDo.DataAccess.Models
         public string Name { get; set; }
         public string Color { get; set; }
 
-        public IEnumerable<TagItem> TagItem { get; set; }
+        public IEnumerable<TagItem> TagItem { get; set; }                      
     }
 }

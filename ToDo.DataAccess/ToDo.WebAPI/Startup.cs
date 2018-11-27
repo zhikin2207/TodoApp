@@ -9,6 +9,7 @@ using ToDo.DataAccess;
 using ToDo.DataAccess.DataBase;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories;
+using ToDo.Services.Handlers;
 
 namespace ToDo.WebAPI
 {
@@ -33,8 +34,8 @@ namespace ToDo.WebAPI
 
             services.AddScoped<IGenericRepository<Category>, GenericRepository<Category>>();
             services.AddScoped<IGenericRepository<Tag>, GenericRepository<Tag>>();
-            services.AddScoped<IGenericRepository<Item>, GenericRepository<Item>>();
             services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<IItemHandler, ItemHandler>();
 
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)

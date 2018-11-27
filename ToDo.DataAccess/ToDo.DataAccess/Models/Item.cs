@@ -13,7 +13,6 @@ namespace ToDo.DataAccess.Models
         public bool Status { get; set; }
         public Priority Priority { get; set; }
 
-        [ForeignKey("CategoryId")]
         public Category Category { get; set; }
         public IEnumerable<TagItem> TagItem { get; set; }
     }
