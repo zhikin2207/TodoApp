@@ -8,6 +8,7 @@ namespace ToDo.DataAccess.DataBase
     {
         public static void Initialize(ToDoDbContext context)
         {
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             if (context.Items.Any())
@@ -22,9 +23,9 @@ namespace ToDo.DataAccess.DataBase
             var tag1 = new Tag { Name = "Tag1", Color = "Yellow" };
             var tag2 = new Tag { Name = "Tag2", Color = "Red" };
 
-            var item1 = new Item { Title = "Item1", Description = "Text", Priority = Priority.High, Category = cat1, DueDate = DateTime.Now, Status = true };
-            var item2 = new Item { Title = "Item2", Description = "Text", Priority = Priority.Low, Category = cat2, DueDate = DateTime.Now, Status = true };
-            var item3 = new Item { Title = "Item3", Description = "Text", Priority = Priority.Medium, Category = cat3, DueDate = DateTime.Now, Status = false };
+            var item1 = new Item { Title = "Item1", Description = "xxx", Priority = Priority.High, Category = cat1, DueDate = DateTime.Now, Status = false };
+            var item2 = new Item { Title = "adult", Description = "Text", Priority = Priority.Low, Category = cat2, DueDate = DateTime.Now, Status = true };
+            var item3 = new Item { Title = "Iasdxxxa", Description = "Text", Priority = Priority.Medium, Category = cat3, DueDate = DateTime.Now, Status = false };
             var item4 = new Item { Title = "Item4", Description = "Text", Priority = Priority.SuperLow, Category = cat3, DueDate = DateTime.Now, Status = false };
 
             var con1 = new TagItem { Item = item1, Tag = tag1 };

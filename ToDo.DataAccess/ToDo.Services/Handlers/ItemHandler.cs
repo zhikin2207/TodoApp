@@ -83,5 +83,42 @@ namespace ToDo.Services.Handlers
                    .Any())
                .Select(ConvertToItemDisplayViewModel);
         }
+
+        public StatisticDTO GetAdultItems()
+        {
+            Dictionary<string, int> counts = new Dictionary<string, int>();
+
+            foreach(var p in Enum.GetValues(typeof(Priority))
+                                        .Cast<Priority>()
+                                        .Select(v => v.ToString()))
+                                        
+            {
+                counts.Add(p, 0);
+            }
+
+            var suitableItems = _itemRepository
+                    .GetAll()
+                    .Where(i => i.Title.Contains("xxx")
+                            || i.Title.Contains("adult")
+                            || string.Equals(
+                               i.Category.Name,
+                               "adult",
+                               StringComparison.CurrentCultureIgnoreCase)
+                            || i.Description.Contains("xxx"))
+                    .Where(i => i.Status == false)
+                    .OrderBy(i => i.DueDate)
+                    .Select(ConvertToItemDisplayViewModel);
+
+            foreach(var i in suitableItems)
+            {
+                counts[i.Priority.ToString()]++;
+            }
+
+            return new StatisticDTO
+            {
+                items = suitableItems,
+                priorityCounts = counts
+            };
+        }
     }
 }

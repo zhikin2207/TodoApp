@@ -10,5 +10,6 @@ namespace ToDo.Services.Handlers.HandlerInterfaces
         IEnumerable<ItemDTO> Search(string category, string[] tags);
         void Create(ItemDTO value);
         void Delete(Guid id);
+        StatisticDTO GetAdultItems();
     }
 }

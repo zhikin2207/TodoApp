@@ -22,15 +22,23 @@ namespace ToDo.WebAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<ItemDisplayViewModel>> GetAll()
         {
-            return _itemHandler.GetAll().Select(CustomConverter.ConvertToItemDisplayViewModel).ToList();
+            return _itemHandler
+                .GetAll()
+                .Select(CustomConverter.ConvertToItemDisplayViewModel)
+                .ToList();
         }
 
         [HttpGet("{category}/tags/{tagString}")]
-        public IEnumerable<ItemDisplayViewModel> Search(string category, string tagString)
+        public IEnumerable<ItemDisplayViewModel> Search(
+            string category,
+            string tagString)
         {
             string[] tags = tagString.Split('-');
 
-            return _itemHandler.Search(category, tags).Select(CustomConverter.ConvertToItemDisplayViewModel).ToList(); ;
+            return _itemHandler
+                .Search(category, tags)
+                .Select(CustomConverter.ConvertToItemDisplayViewModel)
+                .ToList(); ;
         }
 
         [HttpPost]
@@ -43,6 +51,13 @@ namespace ToDo.WebAPI.Controllers
         public void Delete(Guid id)
         {
             _itemHandler.Delete(id);
+        }
+
+        [HttpGet("adults")]
+        public ActionResult<StatisticViewModel> GetAdultItems()
+        {
+            return CustomConverter.ConvertToStatisticViewModel(
+                _itemHandler.GetAdultItems());
         }
     }
 }

@@ -7,6 +7,15 @@ namespace ToDo.WebAPI
 {
     public  class CustomConverter
     {
+        public static StatisticViewModel ConvertToStatisticViewModel(StatisticDTO item)
+        {
+            return new StatisticViewModel
+            {
+                items = item.items.Select(ConvertToItemDisplayViewModel),
+                priorityCounts = item.priorityCounts
+            };
+        }
+
         public static ItemDisplayViewModel ConvertToItemDisplayViewModel(ItemDTO item)
         {
             return new ItemDisplayViewModel
