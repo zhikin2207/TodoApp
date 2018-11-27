@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ToDo.DataAccess.Models;
+﻿using System.Collections.Generic;
 
 namespace ToDo.DataAccess
 {

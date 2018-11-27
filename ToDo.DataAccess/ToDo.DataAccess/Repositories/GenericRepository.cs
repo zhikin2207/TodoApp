@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using ToDo.DataAccess.DataBase;
 using ToDo.DataAccess.Models;
 
@@ -42,15 +41,6 @@ namespace ToDo.DataAccess
         public IEnumerable<T> GetAll()
         {
             return _context.Set<T>();
-        }
-
-        public T GetById(Guid id)
-        {
-            FieldInfo fi = typeof(T).GetField("Id");
-
-            if (fi == null) throw new Exception("Field 'ID' wasn't found.");
-
-            return _context.Set<T>().FirstOrDefault(x => (Guid)fi.GetValue(x) == id);
         }
     }
 }

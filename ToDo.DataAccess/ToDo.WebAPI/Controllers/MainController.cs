@@ -25,18 +25,31 @@ namespace ToDo.WebAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<ItemViewModel>> GetAll()
         {
-            return _itemRepository.GetAll().Select(i => ConvertToItemViewModel(i)).ToList();
+            return _itemRepository
+                .GetAll()
+                .Select(ConvertToItemViewModel)
+                .ToList();
         }
 
         [HttpGet("{categoryString}/tags/{tagString}")]
-        public ItemViewModel FindByKey(string categoryString, string tagString)
+        public IEnumerable<ItemViewModel> Search(string category, string tagString)
         {
-            string[] categoryNames = categoryString.Split('-');
-            string[] tagNames = tagString.Split('-');
+            string[] tags = tagString.Split('-');
 
-            var item = _itemRepository.GetAll().Where(i => Array.IndexOf(categoryNames, (i.Category == null) ? "null" : i.Category.Name) != -1 && i.TagItem.Any(ti => tagNames.Contains<string>(ti.Tag.Name))).FirstOrDefault();
+            var items = _itemRepository
+                .GetAll()
+                .Where(i => string.Equals(
+                    i.Category.Name,
+                    category,
+                    StringComparison.CurrentCultureIgnoreCase))
+                .Where(i => i.TagItem
+                    .Select(ti => ti.Tag.Name)
+                    .Intersect(tags)
+                    .Any())
+                .Select(ConvertToItemViewModel)
+                .ToList();
 
-            return ConvertToItemViewModel(item);
+            return items;
         }
 
         [HttpPost]
@@ -54,9 +67,17 @@ namespace ToDo.WebAPI.Controllers
 
         public ItemViewModel ConvertToItemViewModel(Item item)
         {
-            return new ItemViewModel { Title = item.Title, Category = (item.Category == null) ? "null" : item.Category.Name,
-                Id = item.Id, Description  = item.Description, DueDate = item.DueDate,
-                Priority = item.Priority, Status = item.Status, TagNames = item.TagItem.Select(t => t.Tag.Name)}; 
+            return new ItemViewModel
+            {
+                Title = item.Title,
+                Category = item.Category.Name,
+                Id = item.Id,
+                Description = item.Description,
+                DueDate = item.DueDate,
+                Priority = item.Priority,
+                Status = item.Status,
+                TagNames = item.TagItem.Select(t => t.Tag.Name)
+            };
         }
     }
 }
