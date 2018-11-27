@@ -34,7 +34,7 @@ namespace ToDo.WebAPI.Controllers
             string[] categoryNames = categoryString.Split('-');
             string[] tagNames = tagString.Split('-');
 
-            var item = _itemRepository.GetAll().Where(i => Array.IndexOf(categoryNames, i.Category.Name) != -1 && i.TagItem.Any(ti => tagNames.Contains<string>(ti.Tag.Name))).FirstOrDefault();
+            var item = _itemRepository.GetAll().Where(i => Array.IndexOf(categoryNames, (i.Category == null) ? "null" : i.Category.Name) != -1 && i.TagItem.Any(ti => tagNames.Contains<string>(ti.Tag.Name))).FirstOrDefault();
 
             return ConvertToItemViewModel(item);
         }
