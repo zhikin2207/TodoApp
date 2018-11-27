@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ToDo.DataAccess;
-using ToDo.DataAccess.Models;
-using ToDo.DataAccess.Repositories;
-using ToDo.Services.Handlers;
 using ToDo.Services.Handlers.HandlerInterfaces;
 using ToDo.Services.ViewModels;
-using ToDo.Services;
 using ToDo.WebAPI.ViewModels;
-using ToDo.Services.DTOs;
 
 namespace ToDo.WebAPI.Controllers
 {
@@ -52,7 +44,5 @@ namespace ToDo.WebAPI.Controllers
         {
             _itemHandler.Delete(id);
         }
-
-       
     }
 }

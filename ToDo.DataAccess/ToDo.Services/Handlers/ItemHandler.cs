@@ -8,8 +8,6 @@ using ToDo.Services.Handlers.HandlerInterfaces;
 
 namespace ToDo.Services.Handlers
 {
-
-
     public class ItemHandler : IItemHandler
     {
         private readonly IItemRepository _itemRepository;
