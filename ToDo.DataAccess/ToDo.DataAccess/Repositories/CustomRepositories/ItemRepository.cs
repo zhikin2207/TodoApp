@@ -5,14 +5,10 @@ using System.Linq;
 using ToDo.DataAccess.DataBase;
 using ToDo.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using ToDo.DataAccess.Repositories.CustomRepositories;
 
 namespace ToDo.DataAccess.Repositories
 {
-    public interface IItemRepository : IGenericRepository<Item>
-    { 
-        
-    }
-
     public class ItemRepository : GenericRepository<Item>, IItemRepository
     {
         public ItemRepository(ToDoDbContext context) : base(context)

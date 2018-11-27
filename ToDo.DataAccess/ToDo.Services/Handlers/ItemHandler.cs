@@ -1,47 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ToDo.DataAccess.Models;
-using ToDo.DataAccess.Repositories;
-using ToDo.Services.ViewModels;
-using ToDo.WebAPI.ViewModels;
+using ToDo.DataAccess.Repositories.CustomRepositories;
+using ToDo.Services.DTOs;
+using ToDo.Services.Handlers.HandlerInterfaces;
 
 namespace ToDo.Services.Handlers
 {
-    public interface IItemHandler
-    {
-        List<ItemDisplayViewModel> GetAll();
-        IEnumerable<ItemDisplayViewModel> Search(string category, string[] tags);
-        void Create(ItemCreateViewModel value);
-        void Delete(Guid id);
-    }
+
 
     public class ItemHandler : IItemHandler
     {
         private readonly IItemRepository _itemRepository;
 
-        public ItemHandler(IItemRepository itemRepository)
+        private ItemDTO ConvertToItemDisplayViewModel(Item item)
         {
-            _itemRepository = itemRepository;
-        }
-
-        private ItemDisplayViewModel ConvertToItemDisplayViewModel(Item item)
-        {
-            return new ItemDisplayViewModel
+            return new ItemDTO
             {
                 Title = item.Title,
-                Category = item.Category.Name,
+                Category = item.Category,
                 Id = item.Id,
                 Description = item.Description,
                 DueDate = item.DueDate,
                 Priority = item.Priority,
                 Status = item.Status,
-                TagNames = item.TagItem.Select(t => t.Tag.Name)
+                TagItem = item.TagItem
             };
         }
 
-        private Item ConvertToItem(ItemCreateViewModel item)
+        private Item ConvertToItem(ItemDTO item)
         {
             return new Item
             {
@@ -56,7 +44,12 @@ namespace ToDo.Services.Handlers
             };
         }
 
-        public void Create(ItemCreateViewModel value)
+        public ItemHandler(IItemRepository itemRepository)
+        {
+            _itemRepository = itemRepository;
+        }
+
+        public void Create(ItemDTO value)
         {
             _itemRepository.Add(ConvertToItem(value));
         }
@@ -71,15 +64,14 @@ namespace ToDo.Services.Handlers
                     .FirstOrDefault());
         }
 
-        public List<ItemDisplayViewModel> GetAll()
+        public IEnumerable<ItemDTO> GetAll()
         {
             return _itemRepository
               .GetAll()
-              .Select(ConvertToItemDisplayViewModel)
-              .ToList();
+              .Select(ConvertToItemDisplayViewModel);
         }
 
-        public IEnumerable<ItemDisplayViewModel> Search(string category, string[] tags)
+        public IEnumerable<ItemDTO> Search(string category, string[] tags)
         {
             return _itemRepository
                .GetAll()
@@ -91,9 +83,7 @@ namespace ToDo.Services.Handlers
                    .Select(ti => ti.Tag.Name)
                    .Intersect(tags)
                    .Any())
-               .Select(ConvertToItemDisplayViewModel)
-               .ToList();
+               .Select(ConvertToItemDisplayViewModel);
         }
-
     }
 }

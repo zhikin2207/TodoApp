@@ -8,8 +8,11 @@ using ToDo.DataAccess;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories;
 using ToDo.Services.Handlers;
+using ToDo.Services.Handlers.HandlerInterfaces;
 using ToDo.Services.ViewModels;
+using ToDo.Services;
 using ToDo.WebAPI.ViewModels;
+using ToDo.Services.DTOs;
 
 namespace ToDo.WebAPI.Controllers
 {
@@ -27,7 +30,7 @@ namespace ToDo.WebAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<ItemDisplayViewModel>> GetAll()
         {
-            return _itemHandler.GetAll();
+            return _itemHandler.GetAll().Select(CustomConverter.ConvertToItemDisplayViewModel).ToList();
         }
 
         [HttpGet("{category}/tags/{tagString}")]
@@ -35,13 +38,13 @@ namespace ToDo.WebAPI.Controllers
         {
             string[] tags = tagString.Split('-');
 
-            return _itemHandler.Search(category, tags);
+            return _itemHandler.Search(category, tags).Select(CustomConverter.ConvertToItemDisplayViewModel).ToList(); ;
         }
 
         [HttpPost]
         public void Create([FromBody] ItemCreateViewModel value)
         {
-            _itemHandler.Create(value);
+            _itemHandler.Create(CustomConverter.ConvertToItemDTO(value));
         }
 
         [HttpDelete("{id}")]
@@ -49,5 +52,7 @@ namespace ToDo.WebAPI.Controllers
         {
             _itemHandler.Delete(id);
         }
+
+       
     }
 }
