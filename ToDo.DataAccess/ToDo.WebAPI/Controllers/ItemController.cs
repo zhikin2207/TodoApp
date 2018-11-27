@@ -7,7 +7,7 @@ using ToDo.DataAccess.Models;
 
 namespace ToDo.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ItemController : ControllerBase
     {

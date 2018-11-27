@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ToDo.DataAccess.DataBase;
+using ToDo.DataAccess.Models;
 
 namespace ToDo.DataAccess
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly ToDoDbContext _context;
+        protected readonly ToDoDbContext _context;
 
         public GenericRepository(ToDoDbContext context)
         {
