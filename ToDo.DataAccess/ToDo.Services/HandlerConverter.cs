@@ -81,8 +81,7 @@ namespace ToDo.Services
             {
                 Id = tag.Id,
                 Name = tag.Name,
-                Color = tag.Color,
-               Items = tag.TagItem.Select(t => ConvertToItemDTO(t.Item))
+                Color = tag.Color
             };
         }
 
