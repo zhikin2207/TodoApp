@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDo.WebAPI", "ToDo.WebAPI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDo.DataAccess", "ToDo.DataAccess\ToDo.DataAccess.csproj", "{9BDFC48F-E9D5-46E4-B461-B8E70D6BEF5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.Services", "ToDo.Services\ToDo.Services.csproj", "{3C732E2B-F3AE-409A-A29F-77DCBC9BAB78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDo.Services", "ToDo.Services\ToDo.Services.csproj", "{3C732E2B-F3AE-409A-A29F-77DCBC9BAB78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.Tests", "ToDo.Tests\ToDo.Tests.csproj", "{8AEB3123-3D0C-4ECA-A19F-7AF66C8835F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.Tests", "ToDo.Tests\ToDo.Tests.csproj", "{A477B1C3-394E-4ADA-A4DE-5F37E5ADA818}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{3C732E2B-F3AE-409A-A29F-77DCBC9BAB78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C732E2B-F3AE-409A-A29F-77DCBC9BAB78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C732E2B-F3AE-409A-A29F-77DCBC9BAB78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8AEB3123-3D0C-4ECA-A19F-7AF66C8835F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8AEB3123-3D0C-4ECA-A19F-7AF66C8835F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8AEB3123-3D0C-4ECA-A19F-7AF66C8835F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8AEB3123-3D0C-4ECA-A19F-7AF66C8835F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A477B1C3-394E-4ADA-A4DE-5F37E5ADA818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A477B1C3-394E-4ADA-A4DE-5F37E5ADA818}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A477B1C3-394E-4ADA-A4DE-5F37E5ADA818}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A477B1C3-394E-4ADA-A4DE-5F37E5ADA818}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
