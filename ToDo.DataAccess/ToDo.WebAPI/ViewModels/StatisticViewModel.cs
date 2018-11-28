@@ -8,8 +8,8 @@ namespace ToDo.WebAPI.ViewModels
 {
     public class StatisticViewModel
     {
-        public IEnumerable<ItemDisplayViewModel> items { get; set; }
+        public IEnumerable<ItemDisplayViewModel> Items { get; set; }
 
-        public Dictionary<string, int> priorityCounts { get; set; }
+        public Dictionary<string, int> PriorityCounts { get; set; }
     }
 }

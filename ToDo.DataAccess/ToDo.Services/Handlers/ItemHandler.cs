@@ -12,36 +12,6 @@ namespace ToDo.Services.Handlers
     {
         private readonly IItemRepository _itemRepository;
 
-        private ItemDTO ConvertToItemDisplayViewModel(Item item)
-        {
-            return new ItemDTO
-            {
-                Title = item.Title,
-                Category = item.Category,
-                Id = item.Id,
-                Description = item.Description,
-                DueDate = item.DueDate,
-                Priority = item.Priority,
-                Status = item.Status,
-                TagItem = item.TagItem
-            };
-        }
-
-        private Item ConvertToItem(ItemDTO item)
-        {
-            return new Item
-            {
-                Title = item.Title,
-                Category = item.Category,
-                Id = item.Id,
-                Description = item.Description,
-                DueDate = item.DueDate,
-                Priority = item.Priority,
-                Status = item.Status,
-                TagItem = item.TagItem
-            };
-        }
-
         public ItemHandler(IItemRepository itemRepository)
         {
             _itemRepository = itemRepository;
@@ -49,24 +19,26 @@ namespace ToDo.Services.Handlers
 
         public void Create(ItemDTO value)
         {
-            _itemRepository.Add(ConvertToItem(value));
+            var itemToCreate = HandlerConverter.ConvertToItem(value);
+
+            _itemRepository.Add(itemToCreate);
         }
 
         public void Delete(Guid id)
         {
-            _itemRepository
-                .Delete(
-                    _itemRepository
+            var itemToDelete = _itemRepository
                     .GetAll()
                     .Where(i => i.Id == id)
-                    .FirstOrDefault());
+                    .FirstOrDefault();
+
+            _itemRepository.Delete(itemToDelete);
         }
 
         public IEnumerable<ItemDTO> GetAll()
         {
             return _itemRepository
               .GetAll()
-              .Select(ConvertToItemDisplayViewModel);
+              .Select(HandlerConverter.ConvertToItemDTO);
         }
 
         public IEnumerable<ItemDTO> Search(string category, string[] tags)
@@ -81,43 +53,48 @@ namespace ToDo.Services.Handlers
                    .Select(ti => ti.Tag.Name)
                    .Intersect(tags)
                    .Any())
-               .Select(ConvertToItemDisplayViewModel);
+               .Select(HandlerConverter.ConvertToItemDTO);
         }
 
         public StatisticDTO GetAdultItems()
         {
-            Dictionary<string, int> counts = new Dictionary<string, int>();
-
-            foreach(var p in Enum.GetValues(typeof(Priority))
+            Dictionary<string, int> newPriorityCounts = new Dictionary<string, int>();
+            var listOfPriorities = Enum.GetValues(typeof(Priority))
                                         .Cast<Priority>()
-                                        .Select(v => v.ToString()))
+                                        .Select(v => v.ToString());
+
+            foreach (var p in listOfPriorities)
                                         
             {
-                counts.Add(p, 0);
+                newPriorityCounts.Add(p, 0);
             }
 
-            var suitableItems = _itemRepository
-                    .GetAll()
-                    .Where(i => i.Title.Contains("xxx")
+            Func<Item, bool> condition = (i => (i.Title.Contains("xxx")
                             || i.Title.Contains("adult")
                             || string.Equals(
                                i.Category.Name,
                                "adult",
                                StringComparison.CurrentCultureIgnoreCase)
                             || i.Description.Contains("xxx"))
-                    .Where(i => i.Status == false)
+                            && !i.Status);
+
+            var suitableItems = _itemRepository
+                    .GetAll()
+                    .Where(condition)
                     .OrderBy(i => i.DueDate)
-                    .Select(ConvertToItemDisplayViewModel);
+                    .Select(HandlerConverter.ConvertToItemDTO);
 
             foreach(var i in suitableItems)
             {
-                counts[i.Priority.ToString()]++;
+                var key = i.Priority.ToString();
+
+                newPriorityCounts[key]++;
             }
 
             return new StatisticDTO
             {
-                items = suitableItems,
-                priorityCounts = counts
+                Items = suitableItems,
+                PriorityCounts = newPriorityCounts
             };
         }
     }

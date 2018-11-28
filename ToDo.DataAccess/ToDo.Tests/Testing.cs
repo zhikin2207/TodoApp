@@ -28,7 +28,7 @@ namespace ToDo.Tests
                         Title = "adult",
                         Description = "Text",
                         Priority = Priority.Low,
-                        Category = new Category { Name = "Cat1", Parent = null },
+                        Category = new Category { Name = "Cat2", Parent = null },
                         DueDate = DateTime.Now, Status = true },
                     new Item {
                         Title = "Iasdxxxa",
@@ -50,6 +50,7 @@ namespace ToDo.Tests
                 .GetAdultItems()
                 .items;
                 //.Count;
+
             Assert.AreEqual(2, elementsCount);
         }
     }

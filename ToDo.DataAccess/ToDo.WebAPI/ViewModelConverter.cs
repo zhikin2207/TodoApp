@@ -5,14 +5,14 @@ using ToDo.WebAPI.ViewModels;
 
 namespace ToDo.WebAPI
 {
-    public  class CustomConverter
+    public  class ViewModelConverter
     {
         public static StatisticViewModel ConvertToStatisticViewModel(StatisticDTO item)
         {
             return new StatisticViewModel
             {
-                items = item.items.Select(ConvertToItemDisplayViewModel),
-                priorityCounts = item.priorityCounts
+                Items = item.Items.Select(ConvertToItemDisplayViewModel),
+                PriorityCounts = item.PriorityCounts
             };
         }
 

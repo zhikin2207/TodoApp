@@ -8,7 +8,6 @@ namespace ToDo.DataAccess.DataBase
     {
         public static void Initialize(ToDoDbContext context)
         {
-            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             if (context.Items.Any())

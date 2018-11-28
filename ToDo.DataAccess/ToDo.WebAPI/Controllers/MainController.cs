@@ -24,7 +24,7 @@ namespace ToDo.WebAPI.Controllers
         {
             return _itemHandler
                 .GetAll()
-                .Select(CustomConverter.ConvertToItemDisplayViewModel)
+                .Select(ViewModelConverter.ConvertToItemDisplayViewModel)
                 .ToList();
         }
 
@@ -37,14 +37,14 @@ namespace ToDo.WebAPI.Controllers
 
             return _itemHandler
                 .Search(category, tags)
-                .Select(CustomConverter.ConvertToItemDisplayViewModel)
+                .Select(ViewModelConverter.ConvertToItemDisplayViewModel)
                 .ToList(); ;
         }
 
         [HttpPost]
         public void Create([FromBody] ItemCreateViewModel value)
         {
-            _itemHandler.Create(CustomConverter.ConvertToItemDTO(value));
+            _itemHandler.Create(ViewModelConverter.ConvertToItemDTO(value));
         }
 
         [HttpDelete("{id}")]
@@ -56,7 +56,7 @@ namespace ToDo.WebAPI.Controllers
         [HttpGet("adults")]
         public ActionResult<StatisticViewModel> GetAdultItems()
         {
-            return CustomConverter.ConvertToStatisticViewModel(
+            return ViewModelConverter.ConvertToStatisticViewModel(
                 _itemHandler.GetAdultItems());
         }
     }

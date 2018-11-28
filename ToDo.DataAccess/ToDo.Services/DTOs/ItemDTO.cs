@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using ToDo.DataAccess.Models;
 
 namespace ToDo.Services.DTOs
@@ -14,7 +13,7 @@ namespace ToDo.Services.DTOs
         public bool Status { get; set; }
         public Priority Priority { get; set; }
 
-        public Category Category { get; set; }
-        public IEnumerable<TagItem> TagItem { get; set; }
+        public CategoryDTO Category { get; set; }
+        public IEnumerable<TagItemDTO> TagItem { get; set; }
     }
 }

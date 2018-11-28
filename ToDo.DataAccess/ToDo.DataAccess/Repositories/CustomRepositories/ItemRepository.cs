@@ -12,7 +12,6 @@ namespace ToDo.DataAccess.Repositories
     {
         public ItemRepository(ToDoDbContext context) : base(context)
         {
-            ToDoDbInitializer.Initialize(context);
         }
 
         public IEnumerable<Item> GetAll()
