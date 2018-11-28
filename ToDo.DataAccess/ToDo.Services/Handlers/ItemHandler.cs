@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ToDo.DataAccess.Models;
@@ -10,16 +11,18 @@ namespace ToDo.Services.Handlers
 {
     public class ItemHandler : IItemHandler
     {
+        private readonly HandlerConverter _converter;
         private readonly IItemRepository _itemRepository;
 
         public ItemHandler(IItemRepository itemRepository)
         {
-            _itemRepository = itemRepository;
+            _itemRepository  = itemRepository;
+            _converter = new HandlerConverter();
         }
 
         public void Create(ItemDTO value, IEnumerable<TagDTO> tags)
         {
-            var itemToCreate = HandlerConverter.ConvertToItem(value, tags);
+            var itemToCreate = _converter.ConvertToItem(value, tags);
 
             _itemRepository.Add(itemToCreate);
         }
@@ -38,7 +41,7 @@ namespace ToDo.Services.Handlers
         {
             return _itemRepository
               .GetAll()
-              .Select(HandlerConverter.ConvertToItemDTO);
+              .Select(_converter.ConvertToItemDTO);
         }
 
         public IEnumerable<ItemDTO> Search(string category, string[] tags)
@@ -53,7 +56,7 @@ namespace ToDo.Services.Handlers
                    .Select(ti => ti.Tag.Name)
                    .Intersect(tags)
                    .Any())
-               .Select(HandlerConverter.ConvertToItemDTO);
+               .Select(_converter.ConvertToItemDTO);
         }
 
         public StatisticDTO GetAdultItems()
@@ -72,7 +75,7 @@ namespace ToDo.Services.Handlers
                     .GetAll()
                     .Where(IsItemAdult)
                     .OrderBy(i => i.DueDate)
-                    .Select(HandlerConverter.ConvertToItemDTO);
+                    .Select(_converter.ConvertToItemDTO);
 
             foreach(var item in suitableItems)
             {

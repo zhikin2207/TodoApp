@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AutoMapper;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using ToDo.DataAccess.Models;
 using ToDo.Services.DTOs;
@@ -7,55 +9,57 @@ namespace ToDo.Services
 {
     class HandlerConverter
     {
-        public static CategoryDTO ConvertToCategoryDTO(Category category)
-        {            
-            return new CategoryDTO
+        public HandlerConverter()
+        {
+            Mapper.Initialize(cfg =>
             {
-                Id = category.Id,
-                Name = category.Name,
-                Parent = (category.Parent == null)? null
-                    : ConvertToCategoryDTO(category.Parent)
-            };
+                cfg.CreateMap<CategoryDTO, Category>()
+                .ForMember<Guid>(c => c.Id, opt => opt.MapFrom(c => c.Id))
+                .ForMember<string>(c => c.Name, opt => opt.MapFrom(c => c.Name))
+                .ForMember<Category>(c => c.Parent, opt => opt.MapFrom(c =>
+                        (c.Parent == null) ? null
+                        : Mapper.Map<CategoryDTO, Category>(c.Parent)))
+                 .ReverseMap();
+
+                cfg.CreateMap<TagDTO, Tag>()
+                .ForMember<Guid>(t => t.Id, opt => opt.MapFrom(t => t.Id))
+                .ForMember<string>(t => t.Name, opt => opt.MapFrom(t => t.Name))
+                .ForMember<string>(t => t.Color, opt => opt.MapFrom(t => t.Color))
+                .ReverseMap();
+
+                cfg.CreateMap<ItemDTO, Item>()
+                .ForMember<Guid>(c => c.Id, opt => opt.MapFrom(c => c.Id))
+                .ForMember<string>(c => c.Title, opt => opt.MapFrom(c => c.Title))
+                .ForMember<string>(c => c.Description, opt => opt.MapFrom(c => c.Description))
+                .ForMember<DateTime>(c => c.DueDate, opt => opt.MapFrom(c => c.DueDate))
+                .ForMember<Priority>(c => c.Priority, opt => opt.MapFrom(c => (int)c.Priority))
+                .ForMember<bool>(c => c.Status, opt => opt.MapFrom(c => c.Status))
+                .ReverseMap();
+            });
         }
 
-        public static Category ConvertToCategory(CategoryDTO category)
+        public CategoryDTO ConvertToCategoryDTO(Category category)
         {
-            return new Category
-            {
-                Id = category.Id,
-                Name = category.Name,
-                Parent = (category.Parent == null) ? null
-                   : ConvertToCategory(category.Parent)
-            };
+            return Mapper.Map<Category, CategoryDTO>(category); 
         }
 
-        public static ItemDTO ConvertToItemDTO(Item item)
+        public Category ConvertToCategory(CategoryDTO category)
         {
-            return new ItemDTO
-            {
-                Title = item.Title,
-                Category = ConvertToCategoryDTO(item.Category),
-                Id = item.Id,
-                Description = item.Description,
-                DueDate = item.DueDate,
-                Priority = (PriorityDTO)item.Priority,
-                Status = item.Status,
-                Tags = item.TagItem.Select(t => ConvertToTagDTO(t.Tag))
-            };
+            return Mapper.Map<CategoryDTO, Category>(category);
         }
 
-        public static Item ConvertToItem(ItemDTO item, IEnumerable<TagDTO> tags)
+        public ItemDTO ConvertToItemDTO(Item item)
         {
-            var itemToReturn = new Item
-            {
-                Title = item.Title,
-                Category = ConvertToCategory(item.Category),
-                Id = item.Id,
-                Description = item.Description,
-                DueDate = item.DueDate,
-                Priority = (Priority)item.Priority,
-                Status = item.Status
-            };
+            var itemToReturn = Mapper.Map<Item, ItemDTO>(item);
+
+            itemToReturn.Tags = item.TagItem.Select(t => ConvertToTagDTO(t.Tag));
+
+            return itemToReturn;
+        }
+
+        public Item ConvertToItem(ItemDTO item, IEnumerable<TagDTO> tags)
+        {
+            var itemToReturn = Mapper.Map<ItemDTO, Item>(item);
 
             var tagItem = new List<TagItem>();
 
@@ -77,22 +81,12 @@ namespace ToDo.Services
 
         private static TagDTO ConvertToTagDTO(Tag tag)
         {
-            return new TagDTO
-            {
-                Id = tag.Id,
-                Name = tag.Name,
-                Color = tag.Color
-            };
+            return Mapper.Map<Tag, TagDTO>(tag);
         }
 
         private static Tag ConvertToTag(TagDTO tag, Item owner)
         {
-            var tagToReturn = new Tag
-            {
-                Id = tag.Id,
-                Name = tag.Name,
-                Color = tag.Color
-            };
+            var tagToReturn = Mapper.Map<TagDTO, Tag>(tag);
 
             var tagItem = new List<TagItem>();
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using ToDo.DataAccess.DataBase;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories;
 using ToDo.DataAccess.Repositories.CustomRepositories;
+using ToDo.Services.DTOs;
 using ToDo.Services.Handlers;
 using ToDo.Services.Handlers.HandlerInterfaces;
 

@@ -99,7 +99,7 @@ namespace ToDo.Tests
                 .GetAdultItems()
                 .PriorityCounts["High"];
 
-            Assert.AreEqual(1 countOfHighPriorities);
+            Assert.AreEqual(1, countOfHighPriorities);
         }
     }
 }
