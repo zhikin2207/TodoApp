@@ -11,7 +11,7 @@ namespace ToDo.WebAPI
         {
             return new StatisticViewModel
             {
-                Items = item.Items.Select(ConvertToItemDisplayViewModel),
+                Items = item.Items,
                 PriorityCounts = item.PriorityCounts
             };
         }
@@ -27,7 +27,7 @@ namespace ToDo.WebAPI
                 DueDate = item.DueDate,
                 Priority = item.Priority,
                 Status = item.Status,
-                TagNames = item.TagItem.Select(t => t.Tag.Name)
+                TagNames = item.Tags.Select(t => t.Name)
             };
         }
 
@@ -42,7 +42,7 @@ namespace ToDo.WebAPI
                 DueDate = item.DueDate,
                 Priority = item.Priority,
                 Status = item.Status,
-                TagItem = item.TagItem
+                Tags = item.Tags
             };
         }
 
@@ -57,7 +57,7 @@ namespace ToDo.WebAPI
                 DueDate = item.DueDate,
                 Priority = item.Priority,
                 Status = item.Status,
-                TagItem = item.TagItem
+                Tags = item.Tags
             };
         }
     }

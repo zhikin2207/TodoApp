@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories.CustomRepositories;
 using ToDo.Services.Handlers;
@@ -48,8 +49,7 @@ namespace ToDo.Tests
             
             var elementsCount = new ItemHandler(mockRepository.Object)
                 .GetAdultItems()
-                .items;
-                //.Count;
+                .Items.Count();
 
             Assert.AreEqual(2, elementsCount);
         }

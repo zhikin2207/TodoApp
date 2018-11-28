@@ -17,9 +17,9 @@ namespace ToDo.Services.Handlers
             _itemRepository = itemRepository;
         }
 
-        public void Create(ItemDTO value)
+        public void Create(ItemDTO value, IEnumerable<TagDTO> tags)
         {
-            var itemToCreate = HandlerConverter.ConvertToItem(value);
+            var itemToCreate = HandlerConverter.ConvertToItem(value, tags);
 
             _itemRepository.Add(itemToCreate);
         }
@@ -63,30 +63,20 @@ namespace ToDo.Services.Handlers
                                         .Cast<Priority>()
                                         .Select(v => v.ToString());
 
-            foreach (var p in listOfPriorities)
-                                        
+            foreach (var priority in listOfPriorities)                                        
             {
-                newPriorityCounts.Add(p, 0);
+                newPriorityCounts.Add(priority, 0);
             }
-
-            Func<Item, bool> condition = (i => (i.Title.Contains("xxx")
-                            || i.Title.Contains("adult")
-                            || string.Equals(
-                               i.Category.Name,
-                               "adult",
-                               StringComparison.CurrentCultureIgnoreCase)
-                            || i.Description.Contains("xxx"))
-                            && !i.Status);
 
             var suitableItems = _itemRepository
                     .GetAll()
-                    .Where(condition)
+                    .Where(IsItemAdult)
                     .OrderBy(i => i.DueDate)
                     .Select(HandlerConverter.ConvertToItemDTO);
 
-            foreach(var i in suitableItems)
+            foreach(var item in suitableItems)
             {
-                var key = i.Priority.ToString();
+                var key = item.Priority.ToString();
 
                 newPriorityCounts[key]++;
             }
@@ -96,6 +86,18 @@ namespace ToDo.Services.Handlers
                 Items = suitableItems,
                 PriorityCounts = newPriorityCounts
             };
+        }
+
+        public bool IsItemAdult(Item i)
+        {
+            return (i.Title.Contains("xxx")
+                            || i.Title.Contains("adult")
+                            || string.Equals(
+                               i.Category.Name,
+                               "adult",
+                               StringComparison.CurrentCultureIgnoreCase)
+                            || i.Description.Contains("xxx"))
+                            && !i.Status;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using ToDo.DataAccess.Models;
 using ToDo.Services.DTOs;
 
@@ -37,32 +38,41 @@ namespace ToDo.Services
                 Id = item.Id,
                 Description = item.Description,
                 DueDate = item.DueDate,
-                Priority = item.Priority,
+                Priority = (PriorityDTO)item.Priority,
                 Status = item.Status,
-                TagItem = item.TagItem.Select(ConvertToTagItemDTO)
+                Tags = item.TagItem.Select(t => ConvertToTagDTO(t.Tag))
             };
         }
 
-        public static TagItemDTO ConvertToTagItemDTO(TagItem tagItem)
+        public static Item ConvertToItem(ItemDTO item, IEnumerable<TagDTO> tags)
         {
-            return new TagItemDTO
+            var itemToReturn = new Item
             {
-                Item = ConvertToItemDTO(tagItem.Item),
-                ItemId = tagItem.ItemId,
-                Tag = ConvertToTagDTO(tagItem.Tag),
-                TagId = tagItem.TagId
+                Title = item.Title,
+                Category = ConvertToCategory(item.Category),
+                Id = item.Id,
+                Description = item.Description,
+                DueDate = item.DueDate,
+                Priority = (Priority)item.Priority,
+                Status = item.Status
             };
-        }
 
-        public static TagItem ConvertToTagItem(TagItemDTO tagItem)
-        {
-            return new TagItem
+            var tagItem = new List<TagItem>();
+
+            foreach(var tag in tags)
             {
-                Item = ConvertToItem(tagItem.Item),
-                ItemId = tagItem.ItemId,
-                Tag = ConvertToTag(tagItem.Tag),
-                TagId = tagItem.TagId
-            };
+                tagItem.Add(
+                    new TagItem {
+                        Item = itemToReturn,
+                        ItemId = itemToReturn.Id,
+                        Tag = ConvertToTag(tag, itemToReturn),
+                        TagId = tag.Id}
+                    );
+            }
+
+            itemToReturn.TagItem = tagItem;
+
+            return itemToReturn;
         }
 
         private static TagDTO ConvertToTagDTO(Tag tag)
@@ -72,34 +82,32 @@ namespace ToDo.Services
                 Id = tag.Id,
                 Name = tag.Name,
                 Color = tag.Color,
-                TagItem = tag.TagItem.Select(ConvertToTagItemDTO)
+               Items = tag.TagItem.Select(t => ConvertToItemDTO(t.Item))
             };
         }
 
-        private static Tag ConvertToTag(TagDTO tag)
+        private static Tag ConvertToTag(TagDTO tag, Item owner)
         {
-            return new Tag
+            var tagToReturn = new Tag
             {
                 Id = tag.Id,
                 Name = tag.Name,
-                Color = tag.Color,
-                TagItem = tag.TagItem.Select(ConvertToTagItem)
+                Color = tag.Color
             };
-        }
 
-        public static Item ConvertToItem(ItemDTO item)
-        {
-            return new Item
-            {
-                Title = item.Title,
-                Category = ConvertToCategory(item.Category),
-                Id = item.Id,
-                Description = item.Description,
-                DueDate = item.DueDate,
-                Priority = item.Priority,
-                Status = item.Status,
-                TagItem = item.TagItem.Select(ConvertToTagItem)
-            };
+            var tagItem = new List<TagItem>();
+
+            tagItem.Add(
+                new TagItem {
+                    Item = owner,
+                    ItemId = owner.Id,
+                    Tag = tagToReturn,
+                    TagId = tagToReturn.Id }
+                );
+
+            tagToReturn.TagItem = tagItem;
+
+            return tagToReturn;
         }
     }
 }

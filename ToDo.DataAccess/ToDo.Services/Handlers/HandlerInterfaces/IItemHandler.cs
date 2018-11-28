@@ -8,7 +8,7 @@ namespace ToDo.Services.Handlers.HandlerInterfaces
     {
         IEnumerable<ItemDTO> GetAll();
         IEnumerable<ItemDTO> Search(string category, string[] tags);
-        void Create(ItemDTO value);
+        void Create(ItemDTO value, IEnumerable<TagDTO> tags);
         void Delete(Guid id);
         StatisticDTO GetAdultItems();
     }

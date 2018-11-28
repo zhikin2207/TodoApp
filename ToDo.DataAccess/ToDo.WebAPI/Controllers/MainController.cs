@@ -44,7 +44,7 @@ namespace ToDo.WebAPI.Controllers
         [HttpPost]
         public void Create([FromBody] ItemCreateViewModel value)
         {
-            _itemHandler.Create(ViewModelConverter.ConvertToItemDTO(value));
+            _itemHandler.Create(ViewModelConverter.ConvertToItemDTO(value), value.Tags);
         }
 
         [HttpDelete("{id}")]

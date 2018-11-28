@@ -9,6 +9,6 @@ namespace ToDo.Services.DTOs
         public string Name { get; set; }
         public string Color { get; set; }
 
-        public IEnumerable<TagItemDTO> TagItem { get; set; }
+        public IEnumerable<ItemDTO> Items { get; set; }
     }
 }
