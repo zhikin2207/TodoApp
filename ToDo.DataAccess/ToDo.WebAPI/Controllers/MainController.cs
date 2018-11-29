@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using ToDo.Services.DTOs;
 using ToDo.Services.Handlers.HandlerInterfaces;
 using ToDo.Services.ViewModels;
 using ToDo.WebAPI.ViewModels;
@@ -12,11 +14,13 @@ namespace ToDo.WebAPI.Controllers
     [ApiController]
     public class MainController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IItemHandler _itemHandler;
 
-        public MainController(IItemHandler itemHandler)
+        public MainController(IItemHandler itemHandler, IMapper mapper)
         {
             _itemHandler = itemHandler;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -24,7 +28,7 @@ namespace ToDo.WebAPI.Controllers
         {
             return _itemHandler
                 .GetAll()
-                .Select(ViewModelConverter.ConvertToItemDisplayViewModel)
+                .Select(_mapper.Map<ItemDTO, ItemDisplayViewModel>)
                 .ToList();
         }
 
@@ -35,16 +39,19 @@ namespace ToDo.WebAPI.Controllers
         {
             string[] tags = tagString.Split('-');
 
-            return _itemHandler
-                .Search(category, tags)
-                .Select(ViewModelConverter.ConvertToItemDisplayViewModel)
-                .ToList(); ;
+            var items = _itemHandler.Search(category, tags);
+
+            return items
+                .Select(_mapper.Map<ItemDTO, ItemDisplayViewModel>)
+                .ToList();
         }
 
         [HttpPost]
-        public void Create([FromBody] ItemCreateViewModel value)
+        public void Create([FromBody] ItemCreateViewModel item)
         {
-            _itemHandler.Create(ViewModelConverter.ConvertToItemDTO(value), value.Tags);
+            var itemDTO = _mapper.Map<ItemCreateViewModel, ItemDTO>(item);
+
+            _itemHandler.Create(itemDTO, item.Tags);
         }
 
         [HttpDelete("{id}")]
@@ -56,8 +63,9 @@ namespace ToDo.WebAPI.Controllers
         [HttpGet("adults")]
         public ActionResult<StatisticViewModel> GetAdultItems()
         {
-            return ViewModelConverter.ConvertToStatisticViewModel(
-                _itemHandler.GetAdultItems());
+            var adultItems = _itemHandler.GetAdultItems();
+
+            return _mapper.Map<StatisticDTO, StatisticViewModel>(adultItems);
         }
     }
 }

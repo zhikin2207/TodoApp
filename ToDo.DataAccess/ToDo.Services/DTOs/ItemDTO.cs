@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ToDo.DataAccess.Models;
 
 namespace ToDo.Services.DTOs
 {

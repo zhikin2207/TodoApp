@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using ToDo.DataAccess.DataBase;
 using ToDo.DataAccess.Models;
-using Microsoft.EntityFrameworkCore;
 using ToDo.DataAccess.Repositories.CustomRepositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ToDo.DataAccess.Repositories
 {
@@ -14,7 +14,7 @@ namespace ToDo.DataAccess.Repositories
         {
         }
 
-        public IEnumerable<Item> GetAll()
+        public IEnumerable<Item> GetItemsWithCategoryAndTags()
         {
             return _context.Set<Item>()
                 .Include(i => i.Category)

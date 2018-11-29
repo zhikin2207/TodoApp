@@ -7,6 +7,6 @@ namespace ToDo.DataAccess.Repositories.CustomRepositories
 {
     public interface IItemRepository : IGenericRepository<Item>
     {
-
+        IEnumerable<Item> GetItemsWithCategoryAndTags();
     }
 }

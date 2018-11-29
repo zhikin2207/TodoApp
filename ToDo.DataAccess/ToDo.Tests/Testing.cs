@@ -1,9 +1,11 @@
-﻿using Moq;
+﻿using AutoMapper;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories.CustomRepositories;
+using ToDo.Services.Configuration;
 using ToDo.Services.DTOs;
 using ToDo.Services.Handlers;
 
@@ -13,6 +15,17 @@ namespace ToDo.Tests
     public class Testing
     {
         public Mock<IItemRepository> mockRepository;
+        IMapper _mapper;
+
+        public Testing()
+        {
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile<MappingServicesProfile>();
+            });
+
+            _mapper = mappingConfig.CreateMapper();
+        }
 
         [OneTimeSetUp]
         public void TestSetup()
@@ -55,7 +68,7 @@ namespace ToDo.Tests
         [Test]
         public void GetAdultItems_FourDefaultValues_2ElementsWereReturned()
         { 
-            var elementsCount = new ItemHandler(mockRepository.Object)
+            var elementsCount = new ItemHandler(mockRepository.Object, _mapper)
                 .GetAdultItems()
                 .Items.Count();
 
@@ -65,7 +78,7 @@ namespace ToDo.Tests
         [Test]
         public void GetAdultItems_FourDefaultValues_StatusIsFalse()
         {
-            var itemStatus = new ItemHandler(mockRepository.Object)
+            var itemStatus = new ItemHandler(mockRepository.Object, _mapper)
                 .GetAdultItems()
                 .Items.FirstOrDefault().Status;
 
@@ -75,7 +88,7 @@ namespace ToDo.Tests
         [Test]
         public void GetAdultItems_FourDefaultValues_ValuesMatchToRequirements()
         {
-            var item = new ItemHandler(mockRepository.Object)
+            var item = new ItemHandler(mockRepository.Object, _mapper)
                 .GetAdultItems()
                 .Items.FirstOrDefault();
             Func<ItemDTO,  bool> IsMatchig =(i => (i.Title.Contains("xxx")
@@ -95,7 +108,7 @@ namespace ToDo.Tests
         [Test]
         public void GetAdultItems_FourDefaultValues_RightCountOfPriorities()
         {
-            var countOfHighPriorities = new ItemHandler(mockRepository.Object)
+            var countOfHighPriorities = new ItemHandler(mockRepository.Object, _mapper)
                 .GetAdultItems()
                 .PriorityCounts["High"];
 

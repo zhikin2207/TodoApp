@@ -11,26 +11,43 @@ namespace ToDo.Services.Handlers
 {
     public class ItemHandler : IItemHandler
     {
-        private readonly HandlerConverter _converter;
+        private readonly IMapper _mapper;
         private readonly IItemRepository _itemRepository;
 
-        public ItemHandler(IItemRepository itemRepository)
+        public ItemHandler(IItemRepository itemRepository, IMapper mapper)
         {
             _itemRepository  = itemRepository;
-            _converter = new HandlerConverter();
+            _mapper = mapper;
         }
 
-        public void Create(ItemDTO value, IEnumerable<TagDTO> tags)
+        public void Create(ItemDTO itemDTO, IEnumerable<TagDTO> tagDTOs)
         {
-            var itemToCreate = _converter.ConvertToItem(value, tags);
+            var item = _mapper.Map<ItemDTO, Item>(itemDTO);
+            var tags = _mapper.Map<IEnumerable<TagDTO>, IEnumerable<Tag>>(tagDTOs);
+            var tagItem = new List<TagItem>();
 
-            _itemRepository.Add(itemToCreate);
+            foreach (var tag in tags)
+            {
+                tagItem.Add(
+                    new TagItem
+                    {
+                        Item = item,
+                        ItemId = item.Id,
+                        Tag = tag,
+                        TagId = tag.Id
+                    }
+                    );
+            }
+
+            item.TagItem = tagItem;
+
+            _itemRepository.Add(item);
         }
 
         public void Delete(Guid id)
         {
             var itemToDelete = _itemRepository
-                    .GetAll()
+                    .GetItemsWithCategoryAndTags()
                     .Where(i => i.Id == id)
                     .FirstOrDefault();
 
@@ -40,14 +57,14 @@ namespace ToDo.Services.Handlers
         public IEnumerable<ItemDTO> GetAll()
         {
             return _itemRepository
-              .GetAll()
-              .Select(_converter.ConvertToItemDTO);
+              .GetItemsWithCategoryAndTags()
+              .Select(_mapper.Map<Item, ItemDTO>);
         }
 
         public IEnumerable<ItemDTO> Search(string category, string[] tags)
         {
             return _itemRepository
-               .GetAll()
+               .GetItemsWithCategoryAndTags()
                .Where(i => string.Equals(
                    i.Category.Name,
                    category,
@@ -56,7 +73,7 @@ namespace ToDo.Services.Handlers
                    .Select(ti => ti.Tag.Name)
                    .Intersect(tags)
                    .Any())
-               .Select(_converter.ConvertToItemDTO);
+               .Select(_mapper.Map<Item, ItemDTO>);
         }
 
         public StatisticDTO GetAdultItems()
@@ -72,10 +89,10 @@ namespace ToDo.Services.Handlers
             }
 
             var suitableItems = _itemRepository
-                    .GetAll()
+                    .GetItemsWithCategoryAndTags()
                     .Where(IsItemAdult)
                     .OrderBy(i => i.DueDate)
-                    .Select(_converter.ConvertToItemDTO);
+                    .Select(_mapper.Map<Item, ItemDTO>);
 
             foreach(var item in suitableItems)
             {

@@ -11,9 +11,11 @@ using ToDo.DataAccess.DataBase;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories;
 using ToDo.DataAccess.Repositories.CustomRepositories;
+using ToDo.Services.Configuration;
 using ToDo.Services.DTOs;
 using ToDo.Services.Handlers;
 using ToDo.Services.Handlers.HandlerInterfaces;
+using ToDo.WebAPI.Configuration;
 
 namespace ToDo.WebAPI
 {
@@ -40,6 +42,15 @@ namespace ToDo.WebAPI
             services.AddScoped<IGenericRepository<Tag>, GenericRepository<Tag>>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IItemHandler, ItemHandler>();
+
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile<MappingWebProfile>();
+                mc.AddProfile<MappingServicesProfile>();
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
