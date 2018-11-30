@@ -14,10 +14,11 @@ namespace ToDo.Tests
     [TestFixture]
     public class Testing
     {
-        public Mock<IItemRepository> mockRepository;
-        IMapper _mapper;
+        private Mock<IItemRepository> _mockRepository;
+        private IMapper _mapper;
 
-        public Testing()
+        [OneTimeSetUp]
+        public void OneTimeSetup()
         {
             var mappingConfig = new MapperConfiguration(mc =>
             {
@@ -27,92 +28,114 @@ namespace ToDo.Tests
             _mapper = mappingConfig.CreateMapper();
         }
 
-        [OneTimeSetUp]
+        [SetUp]
         public void TestSetup()
         {
-            mockRepository = new Mock<IItemRepository>();
+            _mockRepository = new Mock<IItemRepository>();
 
-            mockRepository
-                .Setup(x => x.GetAll())
-                .Returns(new[]
-                {
-                    new Item {
-                        Title = "Item1",
-                        Description = "xxx",
-                        Priority = Priority.High,
-                        Category = new Category { Name = "Cat1", Parent = null },
-                        DueDate = DateTime.Now, Status = false },
-                    new Item {
-                        Title = "adult",
-                        Description = "Text",
-                        Priority = Priority.Low,
-                        Category = new Category { Name = "Cat2", Parent = null },
-                        DueDate = DateTime.Now, Status = true },
-                    new Item {
-                        Title = "Iasdxxxa",
-                        Description = "Text",
-                        Priority = Priority.Medium,
-                        Category = new Category { Name = "adult", Parent = null },
-                        DueDate = DateTime.Now,
-                        Status = false },
-                    new Item {
-                        Title = "Item4",
-                        Description = "Text",
-                        Priority = Priority.SuperLow,
-                        Category = new Category { Name = "adult", Parent = null },
-                        DueDate = DateTime.Now,
-                        Status = false }
-                 });
+            //mockRepository
+            //    .Setup(x => x.GetAll())
+            //    .Returns(new[]
+            //    {
+            //        new Item {
+            //            Title = "Item1",
+            //            Description = "xxx",
+            //            Priority = Priority.High,
+            //            Category = new Category { Name = "Cat1", Parent = null },
+            //            DueDate = DateTime.Now, Status = false },
+            //        new Item {
+            //            Title = "adult",
+            //            Description = "Text",
+            //            Priority = Priority.Low,
+            //            Category = new Category { Name = "Cat2", Parent = null },
+            //            DueDate = DateTime.Now, Status = true },
+            //        new Item {
+            //            Title = "Iasdxxxa",
+            //            Description = "Text",
+            //            Priority = Priority.Medium,
+            //            Category = new Category { Name = "adult", Parent = null },
+            //            DueDate = DateTime.Now,
+            //            Status = false },
+            //        new Item {
+            //            Title = "Item4",
+            //            Description = "Text",
+            //            Priority = Priority.SuperLow,
+            //            Category = new Category { Name = "adult", Parent = null },
+            //            DueDate = DateTime.Now,
+            //            Status = false }
+            //     });
         }
 
         [Test]
-        public void GetAdultItems_FourDefaultValues_2ElementsWereReturned()
-        { 
-            var elementsCount = new ItemHandler(mockRepository.Object, _mapper)
-                .GetAdultItems()
-                .Items.Count();
-
-            Assert.AreEqual(2, elementsCount);
-        }
-
-        [Test]
-        public void GetAdultItems_FourDefaultValues_StatusIsFalse()
+        public void GetAdultItems_WithAdultTitles_Selected()
         {
-            var itemStatus = new ItemHandler(mockRepository.Object, _mapper)
-                .GetAdultItems()
-                .Items.FirstOrDefault().Status;
+            var itemWithAdultTitle = WithAdultTitle(new ItemDTO());
 
-            Assert.AreEqual(false, itemStatus);
+            var items = new[]
+            {
+                new ItemDTO(),
+                itemWithAdultTitle
+            };
+
+            var handler = new ItemHandler(_mockRepository.Object, _mapper);
+
+            var actualItems = handler.GetAdultItems();
+
+            Assert.AreEqual(itemWithAdultTitle, actualItems.Items.Single());
         }
 
-        [Test]
-        public void GetAdultItems_FourDefaultValues_ValuesMatchToRequirements()
+        //[Test]
+        //public void GetAdultItems_FourDefaultValues_StatusIsFalse()
+        //{
+        //    var itemStatus = new ItemHandler(mockRepository.Object, _mapper)
+        //        .GetAdultItems()
+        //        .Items.FirstOrDefault().Status;
+
+        //    Assert.AreEqual(false, itemStatus);
+        //}
+
+        //[Test]
+        //public void GetAdultItems_FourDefaultValues_ValuesMatchToRequirements()
+        //{
+        //    var item = new ItemHandler(mockRepository.Object, _mapper)
+        //        .GetAdultItems()
+        //        .Items.FirstOrDefault();
+        //    Func<ItemDTO,  bool> IsMatchig =(i => (i.Title.Contains("xxx")
+        //                        || i.Title.Contains("adult")
+        //                        || string.Equals(
+        //                           i.Category.Name,
+        //                           "adult",
+        //                           StringComparison.CurrentCultureIgnoreCase)
+        //                        || i.Description.Contains("xxx"))
+        //                        && !i.Status);
+
+        //    var match = IsMatchig(item);
+
+        //    Assert.AreEqual(true, match);
+        //}
+
+        //[Test]
+        //public void GetAdultItems_FourDefaultValues_RightCountOfPriorities()
+        //{
+        //    var countOfHighPriorities = new ItemHandler(mockRepository.Object, _mapper)
+        //        .GetAdultItems()
+        //        .PriorityCounts["High"];
+
+        //    Assert.AreEqual(1, countOfHighPriorities);
+        //}
+
+        private ItemDTO WithAdultTitle(ItemDTO item)
         {
-            var item = new ItemHandler(mockRepository.Object, _mapper)
-                .GetAdultItems()
-                .Items.FirstOrDefault();
-            Func<ItemDTO,  bool> IsMatchig =(i => (i.Title.Contains("xxx")
-                                || i.Title.Contains("adult")
-                                || string.Equals(
-                                   i.Category.Name,
-                                   "adult",
-                                   StringComparison.CurrentCultureIgnoreCase)
-                                || i.Description.Contains("xxx"))
-                                && !i.Status);
+            item.Title = "xxx";
 
-            var match = IsMatchig(item);
-
-            Assert.AreEqual(true, match);
+            return item;
         }
 
-        [Test]
-        public void GetAdultItems_FourDefaultValues_RightCountOfPriorities()
+        private ItemDTO WithAdultCategory(ItemDTO item)
         {
-            var countOfHighPriorities = new ItemHandler(mockRepository.Object, _mapper)
-                .GetAdultItems()
-                .PriorityCounts["High"];
+            item.Category = new CategoryDTO { Name = "adult" };
 
-            Assert.AreEqual(1, countOfHighPriorities);
+            return item;
         }
-    }
+    } 
 }
