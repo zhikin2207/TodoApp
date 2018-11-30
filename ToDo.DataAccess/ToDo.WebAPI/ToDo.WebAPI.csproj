@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ToDo.DataAccess\ToDo.DataAccess.csproj" />
+    <ProjectReference Include="..\ToDo.Services\ToDo.Services.csproj" />
   </ItemGroup>
 
 </Project>

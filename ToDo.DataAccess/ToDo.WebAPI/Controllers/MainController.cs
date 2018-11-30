@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using ToDo.DataAccess;
-using ToDo.DataAccess.Models;
-using ToDo.DataAccess.Repositories;
+using ToDo.Services.DTOs;
+using ToDo.Services.Handlers.HandlerInterfaces;
+using ToDo.Services.ViewModels;
 using ToDo.WebAPI.ViewModels;
 
 namespace ToDo.WebAPI.Controllers
@@ -15,69 +14,58 @@ namespace ToDo.WebAPI.Controllers
     [ApiController]
     public class MainController : ControllerBase
     {
-        private readonly IItemRepository _itemRepository;
+        private readonly IMapper _mapper;
+        private readonly IItemHandler _itemHandler;
 
-        public MainController(IItemRepository itemRepository)
+        public MainController(IItemHandler itemHandler, IMapper mapper)
         {
-            _itemRepository = itemRepository;
+            _itemHandler = itemHandler;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ItemViewModel>> GetAll()
+        public ActionResult<IEnumerable<ItemDisplayViewModel>> GetAll()
         {
-            return _itemRepository
+            return _itemHandler
                 .GetAll()
-                .Select(ConvertToItemViewModel)
+                .Select(_mapper.Map<ItemDTO, ItemDisplayViewModel>)
                 .ToList();
         }
 
-        [HttpGet("{categoryString}/tags/{tagString}")]
-        public IEnumerable<ItemViewModel> Search(string category, string tagString)
+        [HttpGet("{category}/tags/{tagString}")]
+        public IEnumerable<ItemDisplayViewModel> Search(
+            string category,
+            string tagString)
         {
             string[] tags = tagString.Split('-');
 
-            var items = _itemRepository
-                .GetAll()
-                .Where(i => string.Equals(
-                    i.Category.Name,
-                    category,
-                    StringComparison.CurrentCultureIgnoreCase))
-                .Where(i => i.TagItem
-                    .Select(ti => ti.Tag.Name)
-                    .Intersect(tags)
-                    .Any())
-                .Select(ConvertToItemViewModel)
-                .ToList();
+            var items = _itemHandler.Search(category, tags);
 
-            return items;
+            return items
+                .Select(_mapper.Map<ItemDisplayViewModel>)
+                .ToList();
         }
 
         [HttpPost]
-        public void Create([FromBody] Item value)
+        public void Create([FromBody] ItemCreateViewModel item)
         {
-            _itemRepository.Add(value);
+            var itemDTO = _mapper.Map<ItemCreateViewModel, ItemDTO>(item);
+
+            _itemHandler.Create(itemDTO, item.Tags);
         }
 
         [HttpDelete("{id}")]
         public void Delete(Guid id)
         {
-            var itemToDelete = _itemRepository.GetAll().Where(i => i.Id == id).FirstOrDefault();
-            _itemRepository.Delete(itemToDelete);
+            _itemHandler.Delete(id);
         }
 
-        public ItemViewModel ConvertToItemViewModel(Item item)
+        [HttpGet("adults")]
+        public ActionResult<StatisticViewModel> GetAdultItems()
         {
-            return new ItemViewModel
-            {
-                Title = item.Title,
-                Category = item.Category.Name,
-                Id = item.Id,
-                Description = item.Description,
-                DueDate = item.DueDate,
-                Priority = item.Priority,
-                Status = item.Status,
-                TagNames = item.TagItem.Select(t => t.Tag.Name)
-            };
+            var adultItems = _itemHandler.GetAdultItems();
+
+            return _mapper.Map<StatisticDTO, StatisticViewModel>(adultItems);
         }
     }
 }

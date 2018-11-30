@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.DataAccess;
 using ToDo.DataAccess.Models;
@@ -29,7 +27,10 @@ namespace ToDo.WebAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<Category> FindByKey(Guid id)
         {
-           return _categoryRepository.GetAll().Where(i => i.Id == id).FirstOrDefault();
+           return _categoryRepository
+                .GetAll()
+                .Where(i => i.Id == id)
+                .FirstOrDefault();
         }
 
         [HttpPost]
@@ -41,7 +42,11 @@ namespace ToDo.WebAPI.Controllers
         [HttpDelete("{id}")]
         public void Delete(Guid id)
         {
-            var itemToDelete = _categoryRepository.GetAll().Where(i => i.Id == id).FirstOrDefault();
+            var itemToDelete = _categoryRepository
+                .GetAll()
+                .Where(i => i.Id == id)
+                .FirstOrDefault();
+
             _categoryRepository.Delete(itemToDelete);
         }
     }

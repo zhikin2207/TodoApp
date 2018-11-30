@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ToDo.DataAccess.Models;
+using ToDo.Services.DTOs;
 
-namespace ToDo.WebAPI.ViewModels
+namespace ToDo.Services.ViewModels
 {
-    public class ItemViewModel
+    public class ItemCreateViewModel
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime DueDate { get; set; }
         public bool Status { get; set; }
-        public Priority Priority { get; set; }
+        public PriorityDTO Priority { get; set; }
 
-        public string Category { get; set; }
-        public IEnumerable<string> TagNames { get; set; }
-
+        public CategoryDTO Category { get; set; }
+        public IEnumerable<TagDTO> Tags { get; set; }
     }
 }
