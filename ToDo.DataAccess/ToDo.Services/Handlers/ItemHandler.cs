@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories.CustomRepositories;
+using ToDo.Services.Configuration;
 using ToDo.Services.DTOs;
 using ToDo.Services.Handlers.HandlerInterfaces;
 
@@ -97,19 +98,12 @@ namespace ToDo.Services.Handlers
 
         public bool IsItemAdult(Item i)
         {
-            var forbiddenTitles = new[] { "xxx", "adult" };
-            var forbiddenCategories = new[] { "adult" };
-            var forbiddenDescriptionWords = new[] { "xxx" };
-
-            // TODO: fix acc. above
-            return (i.Title.Contains("xxx")
-                            || i.Title.Contains("adult")
-                            || string.Equals(
-                               i.Category.Name,
-                               "adult",
-                               StringComparison.CurrentCultureIgnoreCase)
-                            || i.Description.Contains("xxx"))
-                            && !i.Status;
+            return !((ForbiddenItems.Titles.Contains(i.Title)
+                || ForbiddenItems.Categories.Contains(i.Category.Name)
+                || ForbiddenItems.DescriptionWords
+                    .Select(w => i.Description.Contains(w))
+                    .Any(b => b == true))
+                && !i.Status);            
         }
     }
 }
