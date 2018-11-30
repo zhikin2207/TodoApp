@@ -22,24 +22,16 @@ namespace ToDo.Services.Handlers
 
         public void Create(ItemDTO itemDTO, IEnumerable<TagDTO> tagDTOs)
         {
-            var item = _mapper.Map<ItemDTO, Item>(itemDTO);
-            var tags = _mapper.Map<IEnumerable<TagDTO>, IEnumerable<Tag>>(tagDTOs);
-            var tagItem = new List<TagItem>();
+            var item = _mapper.Map<Item>(itemDTO);
+            var tags = _mapper.Map<IEnumerable<Tag>>(tagDTOs);
 
-            foreach (var tag in tags)
+            item.TagItem = tags.Select(t => new TagItem
             {
-                tagItem.Add(
-                    new TagItem
-                    {
-                        Item = item,
-                        ItemId = item.Id,
-                        Tag = tag,
-                        TagId = tag.Id
-                    }
-                    );
-            }
-
-            item.TagItem = tagItem;
+                Item = item,
+                ItemId = item.Id,
+                Tag = t,
+                TagId = t.Id
+            });
 
             _itemRepository.Add(item);
         }
@@ -47,9 +39,8 @@ namespace ToDo.Services.Handlers
         public void Delete(Guid id)
         {
             var itemToDelete = _itemRepository
-                    .GetItemsWithCategoryAndTags()
-                    .Where(i => i.Id == id)
-                    .FirstOrDefault();
+                .GetItemsWithCategoryAndTags()
+                .FirstOrDefault(i => i.Id == id);
 
             _itemRepository.Delete(itemToDelete);
         }
@@ -57,8 +48,8 @@ namespace ToDo.Services.Handlers
         public IEnumerable<ItemDTO> GetAll()
         {
             return _itemRepository
-              .GetItemsWithCategoryAndTags()
-              .Select(_mapper.Map<Item, ItemDTO>);
+               .GetItemsWithCategoryAndTags()
+               .Select(_mapper.Map<Item, ItemDTO>);
         }
 
         public IEnumerable<ItemDTO> Search(string category, string[] tags)
@@ -73,43 +64,44 @@ namespace ToDo.Services.Handlers
                    .Select(ti => ti.Tag.Name)
                    .Intersect(tags)
                    .Any())
-               .Select(_mapper.Map<Item, ItemDTO>);
+               .Select(_mapper.Map<ItemDTO>);
         }
 
         public StatisticDTO GetAdultItems()
         {
-            Dictionary<string, int> newPriorityCounts = new Dictionary<string, int>();
-            var listOfPriorities = Enum.GetValues(typeof(Priority))
-                                        .Cast<Priority>()
-                                        .Select(v => v.ToString());
-
-            foreach (var priority in listOfPriorities)                                        
-            {
-                newPriorityCounts.Add(priority, 0);
-            }
+            var priorityCounts = Enum
+                .GetValues(typeof(Priority))
+                .Cast<Priority>()
+                .Select(v => v.ToString())
+                .ToDictionary(k => k, v => 0);
 
             var suitableItems = _itemRepository
-                    .GetItemsWithCategoryAndTags()
-                    .Where(IsItemAdult)
-                    .OrderBy(i => i.DueDate)
-                    .Select(_mapper.Map<Item, ItemDTO>);
+                .GetItemsWithCategoryAndTags()
+                .Where(IsItemAdult)
+                .OrderBy(i => i.DueDate)
+                .Select(_mapper.Map<Item, ItemDTO>);
 
             foreach(var item in suitableItems)
             {
                 var key = item.Priority.ToString();
 
-                newPriorityCounts[key]++;
+                priorityCounts[key]++;
             }
 
             return new StatisticDTO
             {
                 Items = suitableItems,
-                PriorityCounts = newPriorityCounts
+                PriorityCounts = priorityCounts
             };
         }
 
         public bool IsItemAdult(Item i)
         {
+            var forbiddenTitles = new[] { "xxx", "adult" };
+            var forbiddenCategories = new[] { "adult" };
+            var forbiddenDescriptionWords = new[] { "xxx" };
+
+            // TODO: fix acc. above
             return (i.Title.Contains("xxx")
                             || i.Title.Contains("adult")
                             || string.Equals(

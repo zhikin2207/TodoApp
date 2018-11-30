@@ -42,7 +42,7 @@ namespace ToDo.WebAPI.Controllers
             var items = _itemHandler.Search(category, tags);
 
             return items
-                .Select(_mapper.Map<ItemDTO, ItemDisplayViewModel>)
+                .Select(_mapper.Map<ItemDisplayViewModel>)
                 .ToList();
         }
 

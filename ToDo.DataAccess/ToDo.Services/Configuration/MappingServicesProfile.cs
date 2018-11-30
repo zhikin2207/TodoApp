@@ -8,17 +8,9 @@ namespace ToDo.Services.Configuration
     {
         public MappingServicesProfile()
         {
-            CreateMap<CategoryDTO, Category>()
-                               .ForMember<Category>(c => c.Parent, opt => opt.MapFrom(c =>
-                        (c.Parent == null) ? null
-                        : Mapper.Map<CategoryDTO, Category>(c.Parent)))
-                 .ReverseMap();
-
-            CreateMap<TagDTO, Tag>()
-             .ReverseMap();
-
-            CreateMap<ItemDTO, Item>()
-                .ReverseMap();
+            CreateMap<CategoryDTO, Category>().ReverseMap();
+            CreateMap<TagDTO, Tag>().ReverseMap();
+            CreateMap<ItemDTO, Item>().ReverseMap();
         }
     }
 }
