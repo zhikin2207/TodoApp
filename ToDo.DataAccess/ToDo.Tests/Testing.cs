@@ -3,6 +3,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Threading;
 using ToDo.DataAccess.Models;
 using ToDo.DataAccess.Repositories.CustomRepositories;
 using ToDo.Services.Configuration;
@@ -37,38 +38,34 @@ namespace ToDo.Tests
         [Test]
         public void GetAdultItems_WithAdultTitles_Selected()
         {
-            var itemWithAdultTitle = 
-                WithAdultTitle(
-                NotAdultItem(new Item()));
+            var itemWithAdultTitle = WithAdultTitle(NotAdultItem());
+            
             var items = new[]
             {
-                NotAdultItem(new Item()),
+                NotAdultItem(),
                 itemWithAdultTitle
             };
+
             var expectedItem = _mapper.Map<ItemDTO>(itemWithAdultTitle);
+
             _mockRepository
                  .Setup(m => m.GetItemsWithCategoryAndTags())
                  .Returns(items);
 
             var handler = new ItemHandler(_mockRepository.Object, _mapper);
             
-
             var actualItems = handler.GetAdultItems();
 
-            Assert.AreEqual(expectedItem.Id,
-                actualItems.Items.Single().Id);
+            Assert.AreEqual(expectedItem.Id, actualItems.Items.Single().Id);
         }
 
         [Test]
         public void GetAdultItems_WithAdultCategory_Selected()
         {
-            var itemWithAdultCategory =
-                WithAdultCategory(
-                NotAdultItem(
-                NotAdultItem(new Item())));
+            var itemWithAdultCategory = WithAdultCategory(NotAdultItem());
             var items = new[]
             {
-                NotAdultItem(new Item()),
+                NotAdultItem(),
                 itemWithAdultCategory
             };
             var expectedItem = _mapper.Map<ItemDTO>(itemWithAdultCategory);
@@ -79,19 +76,16 @@ namespace ToDo.Tests
 
             var actualItems = handler.GetAdultItems();
 
-            Assert.AreEqual(expectedItem.Id,
-                actualItems.Items.Single().Id);
+            Assert.AreEqual(expectedItem.Id, actualItems.Items.Single().Id);
         }
 
         [Test]
         public void GetAdultItems_WithAdultDescription_Selected()
         {
-            var itemWithAdultDescription =
-                WithAdultDescription(
-                NotAdultItem(new Item()));
+            var itemWithAdultDescription = WithAdultDescription(NotAdultItem());
             var items = new[]
             {
-                NotAdultItem(new Item()),
+                NotAdultItem(),
                 itemWithAdultDescription
             };
             var expectedItem = _mapper.Map<ItemDTO>(itemWithAdultDescription);
@@ -102,8 +96,7 @@ namespace ToDo.Tests
 
             var actualItems = handler.GetAdultItems();
 
-            Assert.AreEqual(expectedItem.Id,
-                actualItems.Items.Single().Id);
+            Assert.AreEqual(expectedItem.Id, actualItems.Items.Single().Id);
         }
 
         [Test]
@@ -112,10 +105,10 @@ namespace ToDo.Tests
             var itemWithAdultTitleAndStatusTrue =
                 WithAdultTitle(
                 WithStatusTrue(
-                NotAdultItem(new Item())));
+                NotAdultItem()));
             var items = new[]
             {
-                NotAdultItem(new Item()),
+                NotAdultItem(),
                 itemWithAdultTitleAndStatusTrue
             };
             var expectedItem = _mapper.Map<ItemDTO>(itemWithAdultTitleAndStatusTrue);
@@ -135,10 +128,10 @@ namespace ToDo.Tests
             var itemWithAdultTitleAndStatusFalse =
                 WithAdultTitle(
                 WithStatusFalse(
-                NotAdultItem(new Item())));
+                NotAdultItem()));
             var items = new[]
             {
-                NotAdultItem(new Item()),
+                NotAdultItem(),
                 itemWithAdultTitleAndStatusFalse
             };
             var expectedItem = _mapper.Map<ItemDTO>(itemWithAdultTitleAndStatusFalse);
@@ -149,8 +142,7 @@ namespace ToDo.Tests
 
             var actualItems = handler.GetAdultItems();
 
-            Assert.AreEqual(expectedItem.Id,
-                actualItems.Items.Single().Id);
+            Assert.AreEqual(expectedItem.Id, actualItems.Items.Single().Id);
         }
 
         [Test]
@@ -159,10 +151,10 @@ namespace ToDo.Tests
             var itemWithAdultTitleAndAdultCategory =
                 WithAdultTitle(
                 WithAdultCategory(
-                NotAdultItem(new Item())));
+                NotAdultItem()));
             var items = new[]
             {
-                NotAdultItem(new Item()),
+                NotAdultItem(),
                 itemWithAdultTitleAndAdultCategory
             };
             var expectedItem = _mapper.Map<ItemDTO>(itemWithAdultTitleAndAdultCategory);
@@ -173,8 +165,7 @@ namespace ToDo.Tests
 
             var actualItems = handler.GetAdultItems();
 
-            Assert.AreEqual(expectedItem.Id,
-                actualItems.Items.Single().Id);
+            Assert.AreEqual(expectedItem.Id, actualItems.Items.Single().Id);
         }
 
         [Test]
@@ -183,10 +174,10 @@ namespace ToDo.Tests
             var itemWithAdultTitleAndAdultCategoryAndStatusTrue =
                 WithAdultTitle(
                 WithStatusTrue(
-                WithAdultCategory(NotAdultItem(new Item()))));
+                WithAdultCategory(NotAdultItem())));
             var items = new[]
             {
-                NotAdultItem(new Item()),
+                NotAdultItem(),
                 itemWithAdultTitleAndAdultCategoryAndStatusTrue
             };
             var expectedItem = _mapper.Map<ItemDTO>(itemWithAdultTitleAndAdultCategoryAndStatusTrue);
@@ -198,6 +189,44 @@ namespace ToDo.Tests
             var actualItems = handler.GetAdultItems();
 
             Assert.AreEqual(0, actualItems.Items.Count());
+        }
+
+        [Test]
+        public void GetAdultItems_WithTrueStatus_NotSelected()
+        {
+            var itemWithStatusTrue = WithStatusTrue(NotAdultItem());
+            var items = new[]
+            {
+                NotAdultItem(),
+                itemWithStatusTrue
+            };
+            var expectedItem = _mapper.Map<ItemDTO>(itemWithStatusTrue);
+            _mockRepository
+                 .Setup(m => m.GetItemsWithCategoryAndTags())
+                 .Returns(items);
+            var handler = new ItemHandler(_mockRepository.Object, _mapper);
+
+            var actualItems = handler.GetAdultItems();
+
+            Assert.AreEqual(0, actualItems.Items.Count());
+        }
+
+        [Test]
+        public void GetAdultItems_2AdultTitles_OrderedByDate()
+        {
+            var items = new[]
+            {
+                WithAdultTitle(NotAdultItem()),
+                WithAdultTitle(NotAdultItem())
+            };
+            _mockRepository
+                 .Setup(m => m.GetItemsWithCategoryAndTags())
+                 .Returns(items);
+            var handler = new ItemHandler(_mockRepository.Object, _mapper);
+
+            var actualItems = handler.GetAdultItems().Items.ToList();
+
+            Assert.AreEqual(true, actualItems[0].DueDate < actualItems[1].DueDate);
         }
 
         private Item WithAdultTitle(Item item)
@@ -235,14 +264,17 @@ namespace ToDo.Tests
             return item;
         }
 
-        private Item NotAdultItem(Item item)
+        private Item NotAdultItem()
         {
+            var item = new Item();
+
             item.Id = Guid.NewGuid();
             item.Title = "Item1";
             item.Description = "Text";
             item.Priority = Priority.High;
             item.Category = new Category { Name = "Cat1", Parent = null };
             item.DueDate = DateTime.Now;
+            Thread.Sleep(1000);
             item.Status = false;
 
             return item;
