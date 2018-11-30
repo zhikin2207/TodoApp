@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDo.DataAccess", "ToDo.Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDo.Services", "ToDo.Services\ToDo.Services.csproj", "{3C732E2B-F3AE-409A-A29F-77DCBC9BAB78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.Tests", "ToDo.Tests\ToDo.Tests.csproj", "{1DA3B533-F4D4-4FAE-A9FB-E5DF5811BF3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDo.Tests", "ToDo.Tests\ToDo.Tests.csproj", "{37CB30B3-9688-4DC8-BF47-037FF6597D5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{3C732E2B-F3AE-409A-A29F-77DCBC9BAB78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C732E2B-F3AE-409A-A29F-77DCBC9BAB78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C732E2B-F3AE-409A-A29F-77DCBC9BAB78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1DA3B533-F4D4-4FAE-A9FB-E5DF5811BF3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1DA3B533-F4D4-4FAE-A9FB-E5DF5811BF3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1DA3B533-F4D4-4FAE-A9FB-E5DF5811BF3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1DA3B533-F4D4-4FAE-A9FB-E5DF5811BF3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37CB30B3-9688-4DC8-BF47-037FF6597D5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37CB30B3-9688-4DC8-BF47-037FF6597D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37CB30B3-9688-4DC8-BF47-037FF6597D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37CB30B3-9688-4DC8-BF47-037FF6597D5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

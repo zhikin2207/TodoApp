@@ -80,7 +80,7 @@ namespace ToDo.Services.Handlers
                 .GetItemsWithCategoryAndTags()
                 .Where(IsItemAdult)
                 .OrderBy(i => i.DueDate)
-                .Select(_mapper.Map<Item, ItemDTO>);
+                .Select(_mapper.Map<Item, ItemDTO>).ToList();
 
             foreach(var item in suitableItems)
             {
@@ -98,12 +98,14 @@ namespace ToDo.Services.Handlers
 
         public bool IsItemAdult(Item i)
         {
-            return !((ForbiddenItems.Titles.Contains(i.Title)
+            var result = (ForbiddenItems.Titles.Contains(i.Title)
                 || ForbiddenItems.Categories.Contains(i.Category.Name)
                 || ForbiddenItems.DescriptionWords
                     .Select(w => i.Description.Contains(w))
                     .Any(b => b == true))
-                && !i.Status);            
+                && !i.Status;
+
+            return result;
         }
     }
 }
