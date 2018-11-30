@@ -274,7 +274,7 @@ namespace ToDo.Tests
             item.Priority = Priority.High;
             item.Category = new Category { Name = "Cat1", Parent = null };
             item.DueDate = DateTime.Now;
-            Thread.Sleep(1000);
+            Thread.Sleep(100);
             item.Status = false;
 
             return item;
