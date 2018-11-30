@@ -32,97 +32,147 @@ namespace ToDo.Tests
         public void TestSetup()
         {
             _mockRepository = new Mock<IItemRepository>();
-
-            //mockRepository
-            //    .Setup(x => x.GetAll())
-            //    .Returns(new[]
-            //    {
-            //        new Item {
-            //            Title = "Item1",
-            //            Description = "xxx",
-            //            Priority = Priority.High,
-            //            Category = new Category { Name = "Cat1", Parent = null },
-            //            DueDate = DateTime.Now, Status = false },
-            //        new Item {
-            //            Title = "adult",
-            //            Description = "Text",
-            //            Priority = Priority.Low,
-            //            Category = new Category { Name = "Cat2", Parent = null },
-            //            DueDate = DateTime.Now, Status = true },
-            //        new Item {
-            //            Title = "Iasdxxxa",
-            //            Description = "Text",
-            //            Priority = Priority.Medium,
-            //            Category = new Category { Name = "adult", Parent = null },
-            //            DueDate = DateTime.Now,
-            //            Status = false },
-            //        new Item {
-            //            Title = "Item4",
-            //            Description = "Text",
-            //            Priority = Priority.SuperLow,
-            //            Category = new Category { Name = "adult", Parent = null },
-            //            DueDate = DateTime.Now,
-            //            Status = false }
-            //     });
         }
 
         [Test]
         public void GetAdultItems_WithAdultTitles_Selected()
         {
             var itemWithAdultTitle = WithAdultTitle(new ItemDTO());
-
             var items = new[]
             {
                 new ItemDTO(),
                 itemWithAdultTitle
             };
-
             var handler = new ItemHandler(_mockRepository.Object, _mapper);
 
             var actualItems = handler.GetAdultItems();
 
-            Assert.AreEqual(itemWithAdultTitle, actualItems.Items.Single());
+            Assert.AreEqual(itemWithAdultTitle,
+                actualItems.Items.Single());
         }
 
-        //[Test]
-        //public void GetAdultItems_FourDefaultValues_StatusIsFalse()
-        //{
-        //    var itemStatus = new ItemHandler(mockRepository.Object, _mapper)
-        //        .GetAdultItems()
-        //        .Items.FirstOrDefault().Status;
+        [Test]
+        public void GetAdultItems_WithAdultCategory_Selected()
+        {
+            var itemWithAdultCategory = WithAdultCategory(new ItemDTO());
+            var items = new[]
+            {
+                new ItemDTO(),
+                itemWithAdultCategory
+            };
+            var handler = new ItemHandler(_mockRepository.Object, _mapper);
 
-        //    Assert.AreEqual(false, itemStatus);
-        //}
+            var actualItems = handler.GetAdultItems();
 
-        //[Test]
-        //public void GetAdultItems_FourDefaultValues_ValuesMatchToRequirements()
-        //{
-        //    var item = new ItemHandler(mockRepository.Object, _mapper)
-        //        .GetAdultItems()
-        //        .Items.FirstOrDefault();
-        //    Func<ItemDTO,  bool> IsMatchig =(i => (i.Title.Contains("xxx")
-        //                        || i.Title.Contains("adult")
-        //                        || string.Equals(
-        //                           i.Category.Name,
-        //                           "adult",
-        //                           StringComparison.CurrentCultureIgnoreCase)
-        //                        || i.Description.Contains("xxx"))
-        //                        && !i.Status);
+            Assert.AreEqual(itemWithAdultCategory,
+                actualItems.Items.Single());
+        }
 
-        //    var match = IsMatchig(item);
+        [Test]
+        public void GetAdultItems_WithAdultDescription_Selected()
+        {
+            var itemWithAdultDescription = WithAdultDescription(new ItemDTO());
+            var items = new[]
+            {
+                new ItemDTO(),
+                itemWithAdultDescription
+            };
+            var handler = new ItemHandler(_mockRepository.Object, _mapper);
 
-        //    Assert.AreEqual(true, match);
-        //}
+            var actualItems = handler.GetAdultItems();
 
-        //[Test]
-        //public void GetAdultItems_FourDefaultValues_RightCountOfPriorities()
-        //{
-        //    var countOfHighPriorities = new ItemHandler(mockRepository.Object, _mapper)
-        //        .GetAdultItems()
-        //        .PriorityCounts["High"];
+            Assert.AreEqual(itemWithAdultDescription,
+                actualItems.Items.Single());
+        }
 
-        //    Assert.AreEqual(1, countOfHighPriorities);
-        //}
+        [Test]
+        public void GetAdultItems_WithFalseStatus_Selected()
+        {
+            var itemWithFalseStatus = WithStatusFalse(new ItemDTO());
+            var items = new[]
+            {
+                new ItemDTO(),
+                itemWithFalseStatus
+            };
+            var handler = new ItemHandler(_mockRepository.Object, _mapper);
+
+            var actualItems = handler.GetAdultItems();
+
+            Assert.AreEqual(itemWithFalseStatus,
+                actualItems.Items.Single());
+        }
+
+        [Test]
+        public void GetAdultItems_WithAdultTitleAndStatusTrue_NotSelected()
+        {
+            var itemWithAdultTitleAndStatusTrue = WithAdultTitle(
+                WithStatusTrue(new ItemDTO()));
+            var items = new[]
+            {
+                new ItemDTO(),
+                itemWithAdultTitleAndStatusTrue
+            };
+            var handler = new ItemHandler(_mockRepository.Object, _mapper);
+
+            var actualItems = handler.GetAdultItems();
+
+            Assert.AreEqual(0, actualItems.Items.Count());
+        }
+
+        [Test]
+        public void GetAdultItems_WithAdultTitleAndStatusFalse_Selected()
+        {
+            var itemWithAdultTitleAndStatusFalse = WithAdultTitle(
+                WithStatusFalse(new ItemDTO()));
+            var items = new[]
+            {
+                new ItemDTO(),
+                itemWithAdultTitleAndStatusFalse
+            };
+            var handler = new ItemHandler(_mockRepository.Object, _mapper);
+
+            var actualItems = handler.GetAdultItems();
+
+            Assert.AreEqual(itemWithAdultTitleAndStatusFalse,
+                actualItems.Items.Single());
+        }
+
+        [Test]
+        public void GetAdultItems_WithAdultTitleAndAdultCategory_Selected()
+        {
+            var itemWithAdultTitleAndAdultCategory = WithAdultTitle(
+                WithAdultCategory(new ItemDTO()));
+            var items = new[]
+            {
+                new ItemDTO(),
+                itemWithAdultTitleAndAdultCategory
+            };
+            var handler = new ItemHandler(_mockRepository.Object, _mapper);
+
+            var actualItems = handler.GetAdultItems();
+
+            Assert.AreEqual(itemWithAdultTitleAndAdultCategory,
+                actualItems.Items.Single());
+        }
+
+        [Test]
+        public void GetAdultItems_WithAdultTitleAndAdultCategoryAndTrueStatus_NotSelected()
+        {
+            var itemWithAdultTitleAndAdultCategoryAndStatusTrue = WithAdultTitle(
+                WithStatusTrue(
+                    WithAdultCategory(new ItemDTO())));
+            var items = new[]
+            {
+                new ItemDTO(),
+                itemWithAdultTitleAndAdultCategoryAndStatusTrue
+            };
+            var handler = new ItemHandler(_mockRepository.Object, _mapper);
+
+            var actualItems = handler.GetAdultItems();
+
+            Assert.AreEqual(itemWithAdultTitleAndAdultCategoryAndStatusTrue,
+                actualItems.Items.Single());
+        }
 
         private ItemDTO WithAdultTitle(ItemDTO item)
         {
@@ -134,6 +184,27 @@ namespace ToDo.Tests
         private ItemDTO WithAdultCategory(ItemDTO item)
         {
             item.Category = new CategoryDTO { Name = "adult" };
+
+            return item;
+        }
+        
+        private ItemDTO WithAdultDescription(ItemDTO item)
+        {
+            item.Description = "TextxxxText";
+
+            return item;
+        }
+
+        private ItemDTO WithStatusFalse(ItemDTO item)
+        {
+            item.Status = false;
+
+            return item;
+        }
+
+        private ItemDTO WithStatusTrue(ItemDTO item)
+        {
+            item.Status = false;
 
             return item;
         }
