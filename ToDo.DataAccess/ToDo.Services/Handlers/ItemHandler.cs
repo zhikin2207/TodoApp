@@ -26,7 +26,7 @@ namespace ToDo.Services.Handlers
 
         public void Create(ItemDTO itemDTO, IEnumerable<TagDTO> tagDTOs)
         {
-            _logger.Info("Trying to add an item to repository...");
+            _logger.Info("Trying to add an item to repository.");
 
             var item = _mapper.Map<Item>(itemDTO);
             _logger.Debug("Created item without tags.");
@@ -43,12 +43,12 @@ namespace ToDo.Services.Handlers
             });
 
             _itemRepository.Add(item);
-            _logger.Info("Item was added. Id {0}", item.Id);
+            _logger.Info("Item was added. Id {ItemId}", item.Id);
         }
 
         public void Delete(Guid id)
         {
-            _logger.Info("Trying to delete an item from repository...");
+            _logger.Info("Trying to delete an item from repository.");
 
             var itemToDelete = _itemRepository
                 .GetItemsWithCategoryAndTags()
@@ -56,22 +56,25 @@ namespace ToDo.Services.Handlers
 
             _itemRepository.Delete(itemToDelete);
 
-            _logger.Info("Item was deleted. Id {0}", id);
-
+            _logger.Info("Item was deleted {ItemId}", id);
         }
 
         public IEnumerable<ItemDTO> GetAll()
         {
-            _logger.Info("Getting all of items form the repository...");
+            _logger.Info("Getting all of items form the repository.");
 
-            return _itemRepository
+            var items = _itemRepository
                .GetItemsWithCategoryAndTags()
                .Select(_mapper.Map<Item, ItemDTO>);
+
+            _logger.Info("All items were gotten.");
+
+            return items;
         }
 
         public IEnumerable<ItemDTO> Search(string category, string[] tags)
         {
-            _logger.Info("Searching in the repository...");
+            _logger.Info("Searching in the repository for {category} and {tags}.", category, tags);
 
             return _itemRepository
                .GetItemsWithCategoryAndTags()
@@ -88,7 +91,7 @@ namespace ToDo.Services.Handlers
 
         public StatisticDTO GetAdultItems()
         {
-            _logger.Info("Getting adult items from the repository...");
+            _logger.Info("Getting adult items from the repository.");
 
             var priorityCounts = Enum
                 .GetValues(typeof(Priority))
@@ -113,11 +116,15 @@ namespace ToDo.Services.Handlers
 
             _logger.Debug("Priorities were counted.");
 
-            return new StatisticDTO
+            var statistic = new StatisticDTO
             {
                 Items = suitableItems,
                 PriorityCounts = priorityCounts
             };
+
+            _logger.Info("Adult items were gotten.");
+
+            return statistic;
         }
 
         public bool IsItemAdult(Item i)
@@ -129,7 +136,7 @@ namespace ToDo.Services.Handlers
                     .Any(b => b == true))
                 && !i.Status;
 
-            _logger.Debug("Item is adult. Id: {0}", i.Id);
+            _logger.Debug("Item is adult. Id: {ItemId}", i.Id);
 
             return result;
         }
