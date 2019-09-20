@@ -16,6 +16,8 @@ namespace ToDo.DataAccess.Repositories
 
         public IEnumerable<Item> GetItemsWithCategoryAndTags()
         {
+            _logger.Info("Getting items with category and tags from the db");
+
             return _context.Set<Item>()
                 .Include(i => i.Category)
                 .Include(i => i.TagItem)
@@ -24,6 +26,8 @@ namespace ToDo.DataAccess.Repositories
 
         public Item GetById(Guid id)
         {
+            _logger.Info("Looking in the db for item {ItemId}", id);
+
             return GetAll().FirstOrDefault(i => i.Id == id);
         }
     }

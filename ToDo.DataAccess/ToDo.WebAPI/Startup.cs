@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NLog;
 using System;
 using ToDo.DataAccess;
 using ToDo.DataAccess.DataBase;
@@ -21,17 +22,23 @@ namespace ToDo.WebAPI
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        private ILogger _logger;
+
         public Startup(IConfiguration configuration)
         {
-            Console.WriteLine("Text");
             Configuration = configuration;
+            _logger = LogManager.GetCurrentClassLogger();
+
+            _logger.Info("The application has started.");
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            _logger.Info("Setting options of the application..");
+
             services.AddDbContext<ToDoDbContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), builder =>
                 {
@@ -54,7 +61,10 @@ namespace ToDo.WebAPI
 
             services.AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+                .AddMvcOptions(o => { o.Filters.Add(new ErrorHandlingFilter()); })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            _logger.Info("Options were set.");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
